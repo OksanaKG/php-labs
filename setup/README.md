@@ -4,21 +4,12 @@
 
 Інструкції для встановлення необхідного програмного забезпечення на різних платформах.
 
-## Необхідне ПЗ
-
-- PHP 8.x
-- Composer
-- MySQL/MariaDB
-- Git
-
----
-
 ## Скрипти автоматичної установки
 
-| Скрипт | Платформа | Опис |
-|--------|-----------|------|
-| `install.ps1` | Windows | PowerShell скрипт. Використовує Chocolatey для встановлення PHP, Composer, MySQL, Git |
-| `install.sh` | macOS/Linux | Bash скрипт. Використовує Homebrew (macOS) або apt/dnf (Linux) |
+| Скрипт        | Платформа   | Опис                                                                                  |
+| ------------- | ----------- | ------------------------------------------------------------------------------------- |
+| `install.ps1` | Windows     | PowerShell скрипт. Використовує Chocolatey для встановлення PHP, Composer, MySQL, Git |
+| `install.sh`  | macOS/Linux | Bash скрипт. Використовує Homebrew (macOS) або apt/dnf (Linux)                        |
 
 ---
 
@@ -26,7 +17,10 @@
 
 ### Автоматично (скрипт PowerShell)
 
-1. Відкрийте PowerShell **від імені адміністратора**
+1. Відкрийте PowerShell **від імені адміністратора**:
+   - Натисніть `Win + S` і введіть `PowerShell`.
+   - У списку результатів знайдіть "Windows PowerShell".
+   - Клацніть правою кнопкою миші та виберіть **Запустити від імені адміністратора** (Run as administrator).
 
 2. Дозвольте виконання скриптів:
 
@@ -36,21 +30,25 @@
 
 3. Запустіть скрипт:
 
+   > **Важливо:** Перед запуском переконайтесь, що ви знаходитеся у папці `setup`. Якщо ви бачите помилку "не распознано как имя командлета...", це означає, що PowerShell відкрито не в тій папці. Виконайте:
+
    ```powershell
-   cd setup
+   cd шлях\до\php-labs\setup
    .\install.ps1
    ```
 
 ### Варіант 1: WSL (рекомендовано)
 
 1. Відкрийте PowerShell як адміністратор і виконайте:
+
 ```powershell
 wsl --install
 ```
 
-2. Перезавантажте комп'ютер
+1. Перезавантажте комп'ютер
 
-3. Відкрийте Ubuntu (WSL) та виконайте:
+2. Відкрийте Ubuntu (WSL) та виконайте:
+
 ```bash
 cd /path/to/php-labs/setup
 chmod +x install.sh
@@ -60,18 +58,21 @@ chmod +x install.sh
 ### Варіант 2: Chocolatey
 
 1. Встановіть [Chocolatey](https://chocolatey.org/install) (в PowerShell як адміністратор):
+
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 ```
 
-2. Встановіть PHP, Composer та MySQL:
+1. Встановіть PHP, Composer та MySQL:
+
 ```powershell
 choco install php composer mysql -y
 ```
 
-3. Перезапустіть термінал та перевірте:
+1. Перезапустіть термінал та перевірте:
+
 ```powershell
 php -v
 composer -V
@@ -100,17 +101,20 @@ chmod +x install.sh
 ### Вручну (Homebrew)
 
 1. Встановіть Homebrew (якщо ще не встановлено):
+
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-2. Встановіть PHP, Composer та MySQL:
+1. Встановіть PHP, Composer та MySQL:
+
 ```bash
 brew install php composer mysql
 brew services start mysql
 ```
 
-3. Перевірте:
+1. Перевірте:
+
 ```bash
 php -v
 composer -V
@@ -175,4 +179,13 @@ php filename.php
 php -S localhost:8000
 ```
 
-Відкрийте в браузері: http://localhost:8000
+Відкрийте в браузері: <http://localhost:8000>
+
+---
+
+## Необхідне ПЗ
+
+- PHP 8.x
+- Composer
+- MySQL/MariaDB
+- Git

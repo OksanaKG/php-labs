@@ -21,6 +21,12 @@ git clone https://github.com/victorchei/php-labs.git
 cd php-labs
 ```
 
+Встановіть залежності автоматично:
+
+```bash
+./setup/install.sh  # macOS / Linux
+```
+
 Детальні інструкції встановлення для Windows, macOS та Linux: [setup/README.md](setup/README.md)
 
 ## Лабораторні роботи
