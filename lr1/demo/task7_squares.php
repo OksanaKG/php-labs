@@ -49,6 +49,7 @@ $circles = generateRandomCircles($n);
 <head>
     <meta charset="UTF-8">
     <title>Завдання 7.2 — Жовті кола (v1)</title>
+    <link rel="stylesheet" href="demo.css">
     <style>
         * {
             margin: 0;
@@ -68,15 +69,16 @@ $circles = generateRandomCircles($n);
             box-shadow: 0 8px 40px rgba(255, 255, 0, 0.8);
             z-index: 100;
         }
-        .info {
+        .func {
             position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255,255,255,0.7);
-            font-family: Arial, sans-serif;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-family: monospace;
             font-size: 14px;
-            text-align: center;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 15px;
+            border-radius: 8px;
         }
         .counter {
             position: fixed;
@@ -89,20 +91,22 @@ $circles = generateRandomCircles($n);
             padding: 10px 20px;
             border-radius: 8px;
         }
-        .func {
+        .info {
             position: fixed;
-            top: 20px;
-            left: 20px;
-            color: white;
-            font-family: monospace;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.7);
+            font-family: Arial, sans-serif;
             font-size: 14px;
-            background: rgba(0,0,0,0.3);
-            padding: 10px 15px;
-            border-radius: 8px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
+    <div class="back-button-container" style="position:fixed;top:60px;left:20px;z-index:1000;">
+        <button onclick="window.location.href='index.php'" class="back-button">← До демо</button>
+    </div>
     <?= $circles ?>
 
     <div class="func">generateRandomCircles(<?= $n ?>)</div>

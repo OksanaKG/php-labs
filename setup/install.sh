@@ -1,13 +1,29 @@
 #!/bin/bash
 
-# PHP Labs - Setup Script
-# Автоматична установка необхідного програмного забезпечення
+# PHP Labs - Full Setup Script
+# Повне встановлення всього необхідного ПЗ
 
 set -e
 
 echo "==================================="
-echo "  PHP Labs - Установка середовища"
+echo "  PHP Labs - Повне встановлення"
 echo "==================================="
+echo ""
+echo "Цей скрипт встановить все необхідне ПЗ:"
+echo "  - PHP 8.x"
+echo "  - Git"
+echo "  - Composer"
+echo "  - MySQL/MariaDB"
+echo ""
+echo "Якщо вам потрібна тільки базова установка (ЛР 1-5):"
+echo "  ./install-basic.sh"
+echo ""
+echo "Продовжити повну установку? (y/n)"
+read -r answer
+if [[ "$answer" != "y" && "$answer" != "Y" ]]; then
+    echo "Скасовано. Для базової установки: ./install-basic.sh"
+    exit 0
+fi
 echo ""
 
 # Detect OS
@@ -30,22 +46,26 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Install Homebrew (macOS only)
+install_homebrew() {
+    if [[ "$OS" == "macos" ]] && ! command_exists brew; then
+        echo ">>> Встановлення Homebrew..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        echo ""
+    fi
+}
+
 # Install PHP
 install_php() {
-    echo ">>> Встановлення PHP..."
+    echo ">>> Перевірка PHP..."
 
     if command_exists php; then
-        echo "PHP вже встановлено: $(php -v | head -n 1)"
+        echo "✓ PHP вже встановлено: $(php -v | head -n 1)"
     else
+        echo "  Встановлення PHP..."
         case $OS in
             macos)
-                if command_exists brew; then
-                    brew install php
-                else
-                    echo "Homebrew не знайдено. Встановлюю Homebrew..."
-                    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-                    brew install php
-                fi
+                brew install php
                 ;;
             debian)
                 sudo apt update
@@ -55,22 +75,51 @@ install_php() {
                 sudo dnf install -y php php-cli php-mbstring php-xml php-curl php-mysql php-zip
                 ;;
             *)
-                echo "Невідома ОС. Встановіть PHP вручну."
+                echo "✗ Невідома ОС. Встановіть PHP вручну."
                 exit 1
                 ;;
         esac
-        echo "PHP встановлено: $(php -v | head -n 1)"
+        echo "✓ PHP встановлено: $(php -v | head -n 1)"
+    fi
+    echo ""
+}
+
+# Install Git
+install_git() {
+    echo ">>> Перевірка Git..."
+
+    if command_exists git; then
+        echo "✓ Git вже встановлено: $(git --version)"
+    else
+        echo "  Встановлення Git..."
+        case $OS in
+            macos)
+                brew install git
+                ;;
+            debian)
+                sudo apt install -y git
+                ;;
+            redhat)
+                sudo dnf install -y git
+                ;;
+            *)
+                echo "✗ Невідома ОС. Встановіть Git вручну."
+                exit 1
+                ;;
+        esac
+        echo "✓ Git встановлено: $(git --version)"
     fi
     echo ""
 }
 
 # Install Composer
 install_composer() {
-    echo ">>> Встановлення Composer..."
+    echo ">>> Перевірка Composer..."
 
     if command_exists composer; then
-        echo "Composer вже встановлено: $(composer --version)"
+        echo "✓ Composer вже встановлено: $(composer --version)"
     else
+        echo "  Встановлення Composer..."
         case $OS in
             macos)
                 brew install composer
@@ -82,22 +131,23 @@ install_composer() {
                 sudo mv composer.phar /usr/local/bin/composer
                 ;;
             *)
-                echo "Невідома ОС. Встановіть Composer вручну."
+                echo "✗ Невідома ОС. Встановіть Composer вручну."
                 exit 1
                 ;;
         esac
-        echo "Composer встановлено: $(composer --version)"
+        echo "✓ Composer встановлено: $(composer --version)"
     fi
     echo ""
 }
 
 # Install MySQL/MariaDB
 install_mysql() {
-    echo ">>> Встановлення MySQL/MariaDB..."
+    echo ">>> Перевірка MySQL/MariaDB..."
 
     if command_exists mysql; then
-        echo "MySQL вже встановлено: $(mysql --version)"
+        echo "✓ MySQL вже встановлено: $(mysql --version)"
     else
+        echo "  Встановлення MySQL/MariaDB..."
         case $OS in
             macos)
                 brew install mysql
@@ -114,35 +164,36 @@ install_mysql() {
                 sudo systemctl enable mariadb
                 ;;
             *)
-                echo "Невідома ОС. Встановіть MySQL вручну."
+                echo "✗ Невідома ОС. Встановіть MySQL вручну."
                 exit 1
                 ;;
         esac
-        echo "MySQL/MariaDB встановлено"
+        echo "✓ MySQL/MariaDB встановлено"
     fi
     echo ""
 }
 
 # Main installation
-echo "Починаю встановлення..."
+echo "Починаю повне встановлення..."
 echo ""
 
+install_homebrew
 install_php
+install_git
 install_composer
 install_mysql
 
 echo "==================================="
-echo "  Встановлення завершено!"
+echo "  Повне встановлення завершено!"
 echo "==================================="
 echo ""
-echo "Перевірка версій:"
+echo "Встановлено:"
 echo "  PHP:      $(php -v | head -n 1)"
+echo "  Git:      $(git --version)"
 echo "  Composer: $(composer --version 2>/dev/null || echo 'не встановлено')"
 echo "  MySQL:    $(mysql --version 2>/dev/null || echo 'не встановлено')"
 echo ""
-echo "Тепер ви можете запускати PHP файли:"
-echo "  php filename.php"
-echo ""
-echo "Або запустити локальний сервер:"
-echo "  php -S localhost:8000"
+echo "Тепер ви можете:"
+echo "  php filename.php        # запустити PHP файл"
+echo "  php -S localhost:8000   # локальний сервер"
 echo ""

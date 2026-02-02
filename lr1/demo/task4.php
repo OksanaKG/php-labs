@@ -46,6 +46,7 @@ $style = $styles[$timeOfDay];
 <head>
     <meta charset="UTF-8">
     <title>Завдання 4 — Пора доби (v1)</title>
+    <link rel="stylesheet" href="demo.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,14 +65,17 @@ $style = $styles[$timeOfDay];
             border-radius: 20px;
             box-shadow: 0 8px 40px rgba(0,0,0,0.2);
             text-align: center;
+            max-width: none;
         }
         .emoji { font-size: 80px; margin-bottom: 20px; }
         .time { font-size: 72px; font-weight: bold; color: <?= $style['color'] ?>; }
-        .result { font-size: 36px; margin-top: 20px; color: #333; }
-        .info { color: #666; margin-top: 15px; }
+        .result { font-size: 36px; margin-top: 20px; color: #333; background: none; padding: 0; }
     </style>
 </head>
 <body>
+    <div class="back-button-container" style="position:fixed;top:20px;left:20px;">
+        <button onclick="window.location.href='index.php'" class="back-button">← До демо</button>
+    </div>
     <div class="card">
         <div class="emoji"><?= $style['emoji'] ?></div>
         <div class="time"><?= sprintf("%02d:00", $hour) ?></div>

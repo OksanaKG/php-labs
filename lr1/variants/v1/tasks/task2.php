@@ -24,7 +24,6 @@ function generatePoem(): string
 {
     // TODO: Реалізуйте цю функцію
     // Поверніть HTML-код з віршем та форматуванням
-
     return ""; // Замініть це на правильну реалізацію
 }
 
@@ -37,10 +36,7 @@ function generatePoem(): string
  */
 function hasBoldText(string $html, string $text): bool
 {
-    // TODO: Реалізуйте цю функцію
-    // Поверніть true якщо $html містить <b>$text</b>
-
-    return false; // Замініть це на правильну реалізацію
+    return strpos($html, "<b>$text</b>") !== false;
 }
 
 /**
@@ -52,8 +48,5 @@ function hasBoldText(string $html, string $text): bool
  */
 function hasItalicText(string $html, string $text): bool
 {
-    // TODO: Реалізуйте цю функцію
-    // Поверніть true якщо $html містить <i>$text</i>
-
-    return false; // Замініть це на правильну реалізацію
+    return strpos($html, "<i>$text</i>") !== false;
 }

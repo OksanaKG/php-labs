@@ -10,6 +10,7 @@
 
 - Email: <kkn_zhvv@ztu.edu.ua>
 - [Профіль викладача](https://ztu.edu.ua/teacher/445.html)
+- [LinkedIn](https://www.linkedin.com/in/viktorzhelizko/)
 - [ORCID](https://orcid.org/0009-0001-4178-6631)
 
 ## Швидкий старт
@@ -19,27 +20,18 @@
 ```bash
 git clone https://github.com/victorchei/php-labs.git
 cd php-labs
-# Налаштуйте git для цього репозиторію:
-git config user.name "Прізвище Ім'я"
-git config user.email "your.email@ztu.edu.ua"
 ```
 
-Встановіть залежності автоматично:
+Встановіть базове ПЗ (PHP, Git):
 
 ```bash
-./setup/install.sh  # macOS / Linux
+./setup/install-basic.sh   # macOS / Linux
+.\setup\install-basic.ps1  # Windows (PowerShell)
 ```
 
-Запустіть локальний сервер для перегляду завдань у браузері:
+[Запустіть локальний сервер](docs/running-project.md) та відкрийте: <http://localhost:8000>
 
-```bash
-php -S localhost:8000
-```
-
-Відкрийте у браузері, наприклад:
-<http://localhost:8000/lr1/variants/v1/task6.php>
-
-Детальні інструкції встановлення для Windows, macOS та Linux: [setup/README.md](setup/README.md)
+Детальні інструкції: [Налаштування середовища](setup/README.md)
 
 ## Лабораторні роботи
 
@@ -53,74 +45,13 @@ php -S localhost:8000
 
 ## Критерії прийняття
 
-> **Git:** Детальна інструкція з роботи з Git — [GIT_GUIDE.md](GIT_GUIDE.md)
+- [Структура репозиторію](docs/acceptance-criteria.md#структура-репозиторію)
+- [Неймінг гілок](docs/acceptance-criteria.md#неймінг-гілок)
+- [Вимоги до комітів](docs/acceptance-criteria.md#вимоги-до-комітів)
+- [Формат коміт-повідомлень](docs/acceptance-criteria.md#формат-коміт-повідомлень)
 
-### Структура репозиторію
+## Документація
 
-- **Один репозиторій** на всі лабораторні роботи
-- Кожна лабораторна виконується в **окремій гілці**
-- Гілки **не видаляються** після здачі
-
-### Неймінг гілок
-
-| Формат     | Приклад             | Опис                         |
-| ---------- | ------------------- | ---------------------------- |
-| `lr<N>`    | `lr1`, `lr2`, `lr3` | Рекомендований формат        |
-| `lab<N>`   | `lab1`, `lab2`      | Альтернативний варіант       |
-| `Back-End` | `Back-End`          | Для здачі (якщо вимагається) |
-
-```bash
-# Створити нову гілку для ЛР1
-git checkout -b lr1
-
-# Переключитися на існуючу гілку
-git checkout lr2
-
-# Переглянути всі гілки
-git branch -a
-```
-
-### Вимоги до комітів
-
-- Мінімум **1 коміт на кожне завдання** лабораторної роботи
-- Коміти повинні мати **осмислені повідомлення** (не "fix", "update", "changes")
-- **Правильні налаштування Git** — ім'я та email мають відповідати університетському акаунту:
-
-```bash
-# Перевірити поточні налаштування
-git config user.name
-git config user.email
-
-# Налаштувати для цього репозиторію
-git config user.name "Прізвище Ім'я"
-git config user.email "your.email@ztu.edu.ua"
-```
-
-### Формат коміт-повідомлень
-
-Використовуйте [Conventional Commits](https://www.conventionalcommits.org/):
-
-```text
-<type>: <short description>
-```
-
-| Тип        | Опис                             |
-| ---------- | -------------------------------- |
-| `feat`     | Нова функціональність            |
-| `fix`      | Виправлення помилки              |
-| `docs`     | Документація                     |
-| `style`    | Форматування (не впливає на код) |
-| `refactor` | Рефакторинг коду                 |
-| `test`     | Додавання тестів                 |
-
-### Приклад історії комітів
-
-```text
-feat: task7 - generate table and random squares
-feat: task6 - three-digit number operations
-feat: task5 - character classification with switch
-feat: task4 - season detection with if-else
-feat: task3 - currency converter
-feat: task2 - formatted text output
-docs: task1 - environment setup
-```
+- [Запуск проєкту](docs/running-project.md)
+- [Інструкція з роботи з Git](docs/git-guide.md)
+- [Налаштування середовища](setup/README.md)

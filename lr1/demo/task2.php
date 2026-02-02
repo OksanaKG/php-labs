@@ -7,27 +7,34 @@
 ?>
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
     <meta charset="UTF-8">
     <title>Завдання 2 — Вірш</title>
+    <link rel="stylesheet" href="demo.css">
     <style>
-        body {
-            font-family: Georgia, serif;
-            font-size: 18px;
-            line-height: 1.8;
-            padding: 40px;
-            background: #f5f5f5;
-        }
-        .poem {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            max-width: 500px;
-        }
+    body {
+        font-family: Georgia, serif;
+        font-size: 18px;
+        line-height: 1.8;
+        padding: 40px;
+        background: #f5f5f5;
+    }
+
+    .poem {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+    }
     </style>
 </head>
+
 <body>
+    <div class="back-button-container">
+        <button onclick="window.location.href='index.php'" class="back-button">← До демо</button>
+    </div>
     <div class="poem">
         <?php
         echo "<p>Полину в мріях в купель океану,</p>";
@@ -40,4 +47,5 @@
         ?>
     </div>
 </body>
+
 </html>

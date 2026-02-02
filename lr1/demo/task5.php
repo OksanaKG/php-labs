@@ -47,6 +47,7 @@ $emoji = $isEven ? "✓" : "✗";
 <head>
     <meta charset="UTF-8">
     <title>Завдання 5 — Парне/Непарне (v1)</title>
+    <link rel="stylesheet" href="demo.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,6 +64,7 @@ $emoji = $isEven ? "✓" : "✗";
             border-radius: 20px;
             box-shadow: 0 8px 40px rgba(0,0,0,0.3);
             text-align: center;
+            max-width: none;
         }
         .digit {
             font-size: 120px;
@@ -74,12 +76,16 @@ $emoji = $isEven ? "✓" : "✗";
             font-size: 28px;
             margin-top: 20px;
             color: #374151;
+            background: none;
+            padding: 0;
         }
         .emoji { font-size: 48px; color: <?= $color ?>; }
-        .info { color: #666; margin-top: 15px; font-size: 14px; }
     </style>
 </head>
 <body>
+    <div class="back-button-container" style="position:fixed;top:20px;left:20px;">
+        <button onclick="window.location.href='index.php'" class="back-button">← До демо</button>
+    </div>
     <div class="card">
         <div class="digit"><?= $digit ?></div>
         <div class="emoji"><?= $emoji ?></div>

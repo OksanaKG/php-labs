@@ -75,6 +75,7 @@ $maxNum = maxFromDigits($number);
 <head>
     <meta charset="UTF-8">
     <title>Завдання 6 — Чотиризначне число (v1)</title>
+    <link rel="stylesheet" href="demo.css">
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -89,6 +90,7 @@ $maxNum = maxFromDigits($number);
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             margin-bottom: 20px;
+            max-width: none;
         }
         .number {
             font-size: 64px;
@@ -134,6 +136,9 @@ $maxNum = maxFromDigits($number);
     </style>
 </head>
 <body>
+    <div class="back-button-container">
+        <button onclick="window.location.href='index.php'" class="back-button">← До демо</button>
+    </div>
     <div class="container">
         <div class="card">
             <h3>🎲 Випадкове чотиризначне число</h3>

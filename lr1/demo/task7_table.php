@@ -40,6 +40,7 @@ $chessboard = generateChessboard($n);
 <head>
     <meta charset="UTF-8">
     <title>Завдання 7.1 — Шахова дошка (v1)</title>
+    <link rel="stylesheet" href="demo.css">
     <style>
         * { box-sizing: border-box; }
         body {
@@ -62,11 +63,6 @@ $chessboard = generateChessboard($n);
             height: 60px;
             border: 1px solid #5d4037;
         }
-        .info {
-            color: rgba(255,255,255,0.8);
-            margin-top: 20px;
-            font-size: 14px;
-        }
         .params {
             color: white;
             background: rgba(255,255,255,0.1);
@@ -78,6 +74,9 @@ $chessboard = generateChessboard($n);
     </style>
 </head>
 <body>
+    <div class="back-button-container">
+        <button onclick="window.location.href='index.php'" class="back-button">← До демо</button>
+    </div>
     <h1>♟️ Шахова дошка <?= $n ?>×<?= $n ?></h1>
     <div class="params">
         generateChessboard(<?= $n ?>)
@@ -85,6 +84,6 @@ $chessboard = generateChessboard($n);
 
     <?= $chessboard ?>
 
-    <p class="info">Біла клітинка (0,0) → чергування білих (#fff) та чорних (#000) клітинок</p>
+    <p class="info" style="color:rgba(255,255,255,0.8);margin-top:20px;">Біла клітинка (0,0) → чергування білих (#fff) та чорних (#000) клітинок</p>
 </body>
 </html>

@@ -13,10 +13,12 @@
  */
 function sumOfDigits(int $number): int
 {
-    // TODO: Реалізуйте цю функцію
-    // Приклад: 1234 → 1+2+3+4 = 10
-
-    return 0; // Замініть це на правильну реалізацію
+    $sum = 0;
+    while ($number > 0) {
+        $sum += $number % 10;
+        $number = (int)($number / 10);
+    }
+    return $sum;
 }
 
 /**
@@ -27,10 +29,13 @@ function sumOfDigits(int $number): int
  */
 function productOfDigits(int $number): int
 {
-    // TODO: Реалізуйте цю функцію
-    // Приклад: 1234 → 1*2*3*4 = 24
-
-    return 0; // Замініть це на правильну реалізацію
+    $product = 1;
+    while ($number > 0) {
+        $digit = $number % 10;
+        $product *= $digit;
+        $number = (int)($number / 10);
+    }
+    return $product;
 }
 
 /**
@@ -41,10 +46,12 @@ function productOfDigits(int $number): int
  */
 function reverseNumber(int $number): int
 {
-    // TODO: Реалізуйте цю функцію
-    // Приклад: 1234 → 4321
-
-    return 0; // Замініть це на правильну реалізацію
+    $reversed = 0;
+    while ($number > 0) {
+        $reversed = $reversed * 10 + ($number % 10);
+        $number = (int)($number / 10);
+    }
+    return $reversed;
 }
 
 /**
@@ -55,8 +62,15 @@ function reverseNumber(int $number): int
  */
 function maxFromDigits(int $number): int
 {
-    // TODO: Реалізуйте цю функцію
-    // Приклад: 1234 → 4321, 3021 → 3210
-
-    return 0; // Замініть це на правильну реалізацію
+    $digits = [];
+    while ($number > 0) {
+        $digits[] = $number % 10;
+        $number = (int)($number / 10);
+    }
+    rsort($digits);
+    $result = 0;
+    foreach ($digits as $digit) {
+        $result = $result * 10 + $digit;
+    }
+    return $result;
 }

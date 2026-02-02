@@ -12,8 +12,20 @@
  */
 function isEvenOrOdd(int $digit): string
 {
-    // TODO: Реалізуйте цю функцію використовуючи switch
-    // Поверніть "парна" або "непарна"
-
-    return ""; // Замініть це на правильну реалізацію
+    switch ($digit) {
+        case 0:
+        case 2:
+        case 4:
+        case 6:
+        case 8:
+            return "парна";
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 9:
+            return "непарна";
+        default:
+            return "";
+    }
 }

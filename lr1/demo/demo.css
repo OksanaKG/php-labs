@@ -1,0 +1,49 @@
+/* Shared styles for all demo task files */
+
+/* Back button */
+.back-button {
+    padding: 6px 18px;
+    font-size: 16px;
+    border-radius: 8px;
+    background: #6366f1;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+.back-button:hover {
+    background: #4f46e5;
+}
+.back-button-container {
+    margin-bottom: 24px;
+}
+
+/* Card component */
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    margin: 0 auto;
+}
+.card h2 {
+    color: #333;
+    margin-top: 0;
+}
+
+/* Result display */
+.result {
+    font-size: 24px;
+    color: #2d3748;
+    background: #e2e8f0;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Info text */
+.info {
+    color: #718096;
+    font-size: 14px;
+    margin-top: 10px;
+}

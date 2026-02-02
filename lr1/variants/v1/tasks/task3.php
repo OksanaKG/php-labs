@@ -11,8 +11,6 @@
 function convertEurToUah(float $eur, float $rate): int
 {
     // TODO: Реалізуйте цю функцію
-    // Поверніть суму в гривнях (ціле число)
-
     return 0; // Замініть це на правильну реалізацію
 }
 
@@ -26,7 +24,5 @@ function convertEurToUah(float $eur, float $rate): int
 function formatConversionResult(float $eur, int $uah): string
 {
     // TODO: Реалізуйте цю функцію
-    // Формат: "250 євро = 11300 грн"
-
     return ""; // Замініть це на правильну реалізацію
 }

@@ -1,6 +1,6 @@
 # Git: Короткий посібник
 
-[← README](README.md)
+[← README](../README.md)
 
 ## Корисні ресурси
 
