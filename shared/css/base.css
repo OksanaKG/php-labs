@@ -63,6 +63,9 @@
 *, *::before, *::after {
   box-sizing: border-box;
 }
+html {
+  height: 100%;
+}
 
 /* ===== Base Typography ===== */
 body {
@@ -91,9 +94,11 @@ body {
   max-width: 400px;
   margin: 0 auto;
 }
+/* Content wrapper - base styles, extended by .body-with-header */
 .content-wrapper {
   max-width: 900px;
   margin: 0 auto;
+  width: 100%;
 }
 
 /* ===== Result Components ===== */
@@ -346,8 +351,20 @@ body {
 .header-btn-variant:hover {
   background: var(--color-success-bg-hover);
 }
+/* Full height layout for pages with header */
 .body-with-header {
-  padding-top: 70px;
+  padding-top: 50px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.body-with-header .content-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* ===== Header Test Status (Compact) ===== */

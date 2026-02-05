@@ -9,9 +9,7 @@
 
 /* ===== LR1 Specific: Page Background ===== */
 body {
-  padding: 40px;
   background: linear-gradient(135deg, var(--color-primary-bg) 0%, var(--color-bg-alt) 100%);
-  min-height: 100vh;
 }
 
 /* Navigation bar */
@@ -255,4 +253,37 @@ body.modal-open {
 .header-task-select:focus {
   outline: none;
   border-color: var(--color-primary-light);
+}
+
+/* Header code button */
+.header-btn-code {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 13px;
+  padding: 4px 10px;
+}
+.header-btn-code:hover {
+  background: #fde68a;
+}
+
+/* Code modal - wider */
+.code-modal-content {
+  max-width: 900px;
+}
+
+/* Task code block */
+.task-code {
+  margin: 0;
+  padding: 20px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+.task-code code {
+  font-family: inherit;
 }

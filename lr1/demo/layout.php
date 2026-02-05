@@ -39,9 +39,9 @@ function renderDemoHeaderStatus(array $results): string
         . ($score ? "<span class='header-status-score'>{$score} {$percent}</span>" : '')
         . "</div>";
 
-    // Add details button if there are tests
+    // Add results button if there are tests
     if ($results['total'] > 0) {
-        $html .= "<button class='header-btn header-btn-details' onclick='toggleTestModal()'>Деталі</button>";
+        $html .= "<button class='header-btn header-btn-details' onclick='toggleTestModal()'>Результати</button>";
     }
 
     return $html;
@@ -121,18 +121,22 @@ function renderDemoLayout(string $content, string $taskName, string $bodyClass =
     ?>
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($taskName) ?> — Демо ЛР1</title>
     <link rel="stylesheet" href="demo.css">
 </head>
+
 <body class="body-with-header <?= htmlspecialchars($bodyClass) ?>">
     <header class="header-fixed">
         <div class="header-left">
             <a href="/" class="header-btn">Головна</a>
-            <a href="index.php<?= $fromVariant ? '?from=' . htmlspecialchars($fromVariant) : '' ?>" class="header-btn">← Демо</a>
+            <a href="index.php<?= $fromVariant ? '?from=' . htmlspecialchars($fromVariant) : '' ?>" class="header-btn">←
+                Демо</a>
             <?php if ($variantUrl): ?>
-            <a href="<?= htmlspecialchars($variantUrl) ?>" class="header-btn header-btn-variant">← Варіант <?= htmlspecialchars(substr($fromVariant, 1)) ?></a>
+            <a href="<?= htmlspecialchars($variantUrl) ?>" class="header-btn header-btn-variant">← Варіант
+                <?= htmlspecialchars(substr($fromVariant, 1)) ?></a>
             <?php endif; ?>
         </div>
         <div class="header-center">
@@ -142,7 +146,8 @@ function renderDemoLayout(string $content, string $taskName, string $bodyClass =
             <span class="header-variant-label">Демо</span>
             <select class="header-task-select" onchange="if(this.value) location.href=this.value">
                 <?php foreach ($demoTasks as $file => $name): ?>
-                <option value="<?= htmlspecialchars($file . $fromParam) ?>" <?= $file === $currentTask ? 'selected' : '' ?>>
+                <option value="<?= htmlspecialchars($file . $fromParam) ?>"
+                    <?= $file === $currentTask ? 'selected' : '' ?>>
                     <?= htmlspecialchars($name) ?>
                 </option>
                 <?php endforeach; ?>
@@ -164,6 +169,7 @@ function renderDemoLayout(string $content, string $taskName, string $bodyClass =
             document.body.classList.toggle('modal-open');
         }
     }
+
     function closeModalOnBackdrop(e) {
         if (e.target.id === 'test-modal') {
             toggleTestModal();
@@ -180,6 +186,7 @@ function renderDemoLayout(string $content, string $taskName, string $bodyClass =
     </script>
     <?= devReloadScript() ?>
 </body>
+
 </html>
 <?php
 }

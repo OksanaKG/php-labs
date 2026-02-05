@@ -41,9 +41,9 @@ function renderHeaderStatus(array $results): string
         . ($score ? "<span class='header-status-score'>{$score} {$percent}</span>" : '')
         . "</div>";
 
-    // Add details button if there are tests
+    // Add results button if there are tests
     if ($results['total'] > 0) {
-        $html .= "<button class='header-btn header-btn-details' onclick='toggleTestModal()'>Деталі</button>";
+        $html .= "<button class='header-btn header-btn-details' onclick='toggleTestModal()'>Результати</button>";
     }
 
     return $html;
@@ -78,6 +78,31 @@ function renderTestModal(array $results): string
     }
 
     $html .= "</ul>";
+    $html .= "</div></div>";
+
+    return $html;
+}
+
+/**
+ * Renders code modal HTML
+ */
+function renderCodeModal(string $taskFile, string $variantPath): string
+{
+    $filePath = $variantPath . '/tasks/' . str_replace('.php', '', basename($taskFile)) . '.php';
+
+    if (!file_exists($filePath)) {
+        return '';
+    }
+
+    $code = file_get_contents($filePath);
+
+    $html = "<div id='code-modal' class='test-modal' onclick='closeCodeModalOnBackdrop(event)'>";
+    $html .= "<div class='test-modal-content code-modal-content'>";
+    $html .= "<div class='test-modal-header'>";
+    $html .= "<h2>💻 Код / Завдання</h2>";
+    $html .= "<button class='test-modal-close' onclick='toggleCodeModal()'>✕</button>";
+    $html .= "</div>";
+    $html .= "<pre class='task-code'><code>" . htmlspecialchars($code) . "</code></pre>";
     $html .= "</div></div>";
 
     return $html;
@@ -127,6 +152,7 @@ function renderLayout(string $content, array $config): void
         </div>
         <div class="header-center">
             <?= renderHeaderStatus($testResults) ?>
+            <button class="header-btn header-btn-code" onclick="toggleCodeModal()">Код</button>
         </div>
         <div class="header-right">
             <span class="header-variant-label"><?= htmlspecialchars($variantName) ?></span>
@@ -145,6 +171,7 @@ function renderLayout(string $content, array $config): void
     </div>
 
     <?= renderTestModal($testResults) ?>
+    <?= renderCodeModal($currentTask, $variantPath) ?>
 
     <script>
     function toggleTestModal() {
@@ -159,11 +186,27 @@ function renderLayout(string $content, array $config): void
             toggleTestModal();
         }
     }
+    function toggleCodeModal() {
+        const modal = document.getElementById('code-modal');
+        if (modal) {
+            modal.classList.toggle('open');
+            document.body.classList.toggle('modal-open');
+        }
+    }
+    function closeCodeModalOnBackdrop(e) {
+        if (e.target.id === 'code-modal') {
+            toggleCodeModal();
+        }
+    }
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            const modal = document.getElementById('test-modal');
-            if (modal && modal.classList.contains('open')) {
+            const testModal = document.getElementById('test-modal');
+            const codeModal = document.getElementById('code-modal');
+            if (testModal && testModal.classList.contains('open')) {
                 toggleTestModal();
+            }
+            if (codeModal && codeModal.classList.contains('open')) {
+                toggleCodeModal();
             }
         }
     });

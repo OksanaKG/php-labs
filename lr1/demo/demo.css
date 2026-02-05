@@ -6,15 +6,7 @@
 /* Import global base styles (includes CSS variables) */
 @import '../../shared/css/base.css';
 
-/* Base body styles */
-body {
-  margin: 0;
-  padding: 40px;
-  min-height: 100vh;
-}
-body.body-with-header {
-  padding-top: 70px;
-}
+/* Base body styles - inherits full-height layout from base.css */
 
 /* Back button */
 .back-button {
@@ -293,6 +285,39 @@ body.body-with-header {
   color: var(--color-text-muted);
   font-size: 13px;
   padding: 4px 10px;
+}
+
+/* Header code button */
+.header-btn-code {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 13px;
+  padding: 4px 10px;
+}
+.header-btn-code:hover {
+  background: #fde68a;
+}
+
+/* Code modal - wider */
+.code-modal-content {
+  max-width: 900px;
+}
+
+/* Task code block */
+.task-code {
+  margin: 0;
+  padding: 20px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+.task-code code {
+  font-family: inherit;
 }
 
 /* ===== Test Modal ===== */
