@@ -460,3 +460,27 @@ body.modal-open {
   font-size: 13px;
   padding: 4px 10px;
 }
+
+/* Header right section with task selector */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-variant-label {
+  font-weight: 600;
+  color: #4f46e5;
+}
+.header-task-select {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+}
+.header-task-select:focus {
+  outline: none;
+  border-color: #6366f1;
+}

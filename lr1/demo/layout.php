@@ -94,6 +94,18 @@ function renderDemoLayout(string $content, string $taskName, string $bodyClass =
     // Check if came from a variant
     $fromVariant = $_GET['from'] ?? null;
     $currentTask = basename($_SERVER['SCRIPT_NAME']);
+    $fromParam = $fromVariant ? '?from=' . htmlspecialchars($fromVariant) : '';
+
+    // Demo tasks list for selector
+    $demoTasks = [
+        'task2.php' => 'Завдання 2',
+        'task3.php' => 'Завдання 3',
+        'task4.php' => 'Завдання 4',
+        'task5.php' => 'Завдання 5',
+        'task6.php' => 'Завдання 6',
+        'task7_table.php' => 'Завдання 7.1',
+        'task7_squares.php' => 'Завдання 7.2',
+    ];
 
     // Build variant URL if came from one
     $variantUrl = null;
@@ -127,7 +139,14 @@ function renderDemoLayout(string $content, string $taskName, string $bodyClass =
             <?= renderDemoHeaderStatus($testResults) ?>
         </div>
         <div class="header-right">
-            Демо<?php if (preg_match('/(\d+(?:\.\d+)?)/', $taskName, $m)): ?> / Завд. <?= $m[1] ?><?php endif; ?>
+            <span class="header-variant-label">Демо</span>
+            <select class="header-task-select" onchange="if(this.value) location.href=this.value">
+                <?php foreach ($demoTasks as $file => $name): ?>
+                <option value="<?= htmlspecialchars($file . $fromParam) ?>" <?= $file === $currentTask ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($name) ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
         </div>
     </header>
 

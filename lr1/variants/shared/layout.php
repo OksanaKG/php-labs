@@ -98,12 +98,6 @@ function renderLayout(string $content, array $config): void
     $taskInfo = $tasks[$currentTask] ?? ['name' => 'Завдання', 'test' => null];
     $taskName = $taskInfo['name'];
 
-    // Extract task number for display
-    $taskNum = '';
-    if (preg_match('/(\d+(?:\.\d+)?)/', $taskName, $matches)) {
-        $taskNum = "Завд. {$matches[1]}";
-    }
-
     // Run tests automatically
     $testResults = ['status' => 'no_tests', 'passed' => 0, 'failed' => 0, 'total' => 0, 'details' => []];
     if (isset($taskInfo['test'])) {
@@ -135,7 +129,14 @@ function renderLayout(string $content, array $config): void
             <?= renderHeaderStatus($testResults) ?>
         </div>
         <div class="header-right">
-            <?= htmlspecialchars($variantName) ?><?= $taskNum ? " / {$taskNum}" : '' ?>
+            <span class="header-variant-label"><?= htmlspecialchars($variantName) ?></span>
+            <select class="header-task-select" onchange="if(this.value) location.href=this.value">
+                <?php foreach ($tasks as $file => $info): ?>
+                <option value="<?= htmlspecialchars($file) ?>" <?= $file === $currentTask ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($info['name']) ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
         </div>
     </header>
 
