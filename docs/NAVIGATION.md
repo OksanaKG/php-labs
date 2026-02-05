@@ -1,89 +1,69 @@
-# Project Navigation Structure
+# Navigation Structure
 
-## Site Map
+## Схема
 
 ```text
-                                    +------------------+
-                                    |    index.php     |
-                                    |  (Select Variant)|
-                                    +--------+---------+
-                                             |
-                                             v
-                                    +------------------+
-                                    |  Variant Page    |
-                                    | /lr1/variants/v1 |
-                                    |    index.php     |
-                                    +--------+---------+
-                                             |
-              +------------------------------+------------------------------+
-              |                              |                              |
-              v                              v                              v
-        +-----------+               +--------------+               +--------------+
-        |   Demo    |               |   Task 2     |               |   Task N     |
-        +-----------+               +--------------+               +--------------+
-              |
-              v
-        Demo Tasks
-        (accessible only
-        from variant page)
+┌─────────────────────────────────────────────────────────────────┐
+│                         HOME (/)                                 │
+│                    [Вибір варіанту: v1 ▼]                        │
+└─────────────────────────────┬───────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  [Home]                                            Варіант 1    │
+├─────────────────────────────────────────────────────────────────┤
+│  [LR1] [LR2] [LR3] [LR4] [LR5] [LR6]  ← tabs                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│    +------+  +---+  +---+  +---+  +---+  +---+  +-----+         │
+│    | Demo |  | 2 |  | 3 |  | 4 |  | 5 |  | 6 |  | 7.1 |         │
+│    +------+  +---+  +---+  +---+  +---+  +---+  +-----+         │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+              ┌───────────────┴───────────────┐
+              ▼                               ▼
+┌──────────────────────┐         ┌──────────────────────┐
+│  Task Page           │         │  Demo Page           │
+│  [Home] [← Варіант]  │         │  [Home] [← Варіант]  │
+│  [Demo]              │         │                      │
+│  ❌ 0% / ✅ 100%     │         │  ✅ 100%             │
+└──────────────────────┘         └──────────────────────┘
 ```
+
+---
 
 ## URL Structure
 
 ```text
-/                                    -> Home page (variant selection only)
-/lr1/variants/v1/index.php           -> Variant page (task cards + demo)
-/lr1/variants/v1/task3.php           -> Variant task
-/lr1/demo/index.php?from=v1          -> Demo index (from variant only)
-/lr1/demo/task3.php?from=v1          -> Demo task (from variant only)
+/                              → Home (вибір варіанту)
+/variants/v1/                  → Variant page (LR1 за замовчуванням)
+/variants/v1/?lab=lr2          → Variant page (LR2 активний)
+/variants/v1/lr1/task3.php     → Task page
+/demo/lr1/task3.php?from=v1    → Demo page
 ```
 
-## Navigation Flow
+---
 
-```text
-                    Home Page (/)
-                  [Select Variant]
-                         |
-                         v
-               Variant Page (index.php)
-            [Demo] [2] [3] [4] [5] [6] [7]
-                  /     |           \
-                 /      |            \
-                v       v             v
-           Demo      Task 2  ...   Task N
-           Index     Page          Page
-              |         |             |
-              v         |             |
-         Demo Tasks     |             |
-              |         |             |
-              +---------+-------------+
-                        |
-                        v
-              [Back to Variant]
-```
+## Pages
 
-## Page Types
-
-### 1. Home Page (`/index.php`)
-
-Simple variant selection. After selecting → redirect to variant page.
+### 1. Home (`/`)
 
 ```text
 +--------------------------------------------------+
 |                    PHP Labs                       |
 |                                                  |
-|          Variant: [v1 ▼]  [ Select ]            |
-|                                                  |
+|          Варіант: [v1 ▼]  [Вибрати]             |
 +--------------------------------------------------+
 ```
 
-### 2. Variant Page (`/lr1/variants/v1/index.php`)
-
-Main working page. Shows task cards with Demo as first card.
+### 2. Variant Page (`/variants/v1/`)
 
 ```text
 +--------------------------------------------------+
-|  [Home]                            Variant 1     |
+|  [Home]                            Варіант 1     |
++--------------------------------------------------+
+|  [LR1] [LR2] [LR3] [LR4] [LR5] [LR6]            |
 +--------------------------------------------------+
 
      +------+  +---+  +---+  +---+  +---+  +---+
@@ -95,13 +75,11 @@ Main working page. Shows task cards with Demo as first card.
                +-----+  +-----+
 ```
 
-### 3. Variant Task Page (`/lr1/variants/v1/task3.php`)
-
-Task page with navigation to demo.
+### 3. Task Page (`/variants/v1/lr1/task3.php`)
 
 ```text
 +------------------------------------------------------------------+
-|  [Home] [← Variant] [Demo]  |  ❌ 0%  |  Variant 1 / Task 3      |
+|  [Home] [← Варіант] [Demo]  |  ❌ 0%  |  Варіант 1 / LR1 / Завд.3 |
 +------------------------------------------------------------------+
 
 +------------------------------------------------------------------+
@@ -110,31 +88,11 @@ Task page with navigation to demo.
 +------------------------------------------------------------------+
 ```
 
-### 4. Demo Index (`/lr1/demo/index.php?from=v1`)
-
-Demo overview. Only accessible from variant page (has `?from=v1`).
-
-```text
-+--------------------------------------------------+
-|  [Home] [← Variant 1]                    Demo    |
-+--------------------------------------------------+
-
-        +---+  +---+  +---+  +---+  +---+
-        | 2 |  | 3 |  | 4 |  | 5 |  | 6 |
-        +---+  +---+  +---+  +---+  +---+
-
-               +-----+  +-----+
-               | 7.1 |  | 7.2 |
-               +-----+  +-----+
-```
-
-### 5. Demo Task Page (`/lr1/demo/task3.php?from=v1`)
-
-Demo solution. Shows "Back to Variant" button.
+### 4. Demo Page (`/demo/lr1/task3.php?from=v1`)
 
 ```text
 +------------------------------------------------------------------+
-|  [Home] [← Demo] [← Variant 1]  |  ✅ 100%  |  Demo / Task 3     |
+|  [Home] [← Варіант 1]       |  ✅ 100%  |  Demo / LR1 / Завд.3   |
 +------------------------------------------------------------------+
 
 +------------------------------------------------------------------+
@@ -143,70 +101,61 @@ Demo solution. Shows "Back to Variant" button.
 +------------------------------------------------------------------+
 ```
 
+---
+
 ## Navigation Buttons
 
-| Button | Description | Appears On |
-|--------|-------------|------------|
-| `[Home]` | Back to home `/` | All pages |
-| `[← Variant]` | Back to variant index | Variant task pages |
-| `[Demo]` | Open demo for this task | Variant task pages |
-| `[← Variant N]` | Back to variant | Demo pages |
-| `[← Demo]` | Back to demo index | Demo task pages |
+| Button         | Description              | Location          |
+| -------------- | ------------------------ | ----------------- |
+| `[Home]`       | На головну `/`           | Всі сторінки      |
+| `[← Варіант]`  | До variant page          | Task, Demo pages  |
+| `[Demo]`       | Demo цього завдання      | Task page         |
+| `[LR1-6]`      | Tabs для вибору лаби     | Variant page      |
 
-## Key Principles
+---
 
-1. **Variant-centric**: Student selects variant once, works within it
-2. **Demo from variant only**: Demo is accessed through variant page
-3. **Easy return**: Always can return to variant from demo
-4. **Context preserved**: `?from=vN` parameter tracks origin variant
+## Principles
 
-## Button Styles
+1. **Variant-centric** — студент вибирає варіант один раз
+2. **Labs as tabs** — швидке перемикання між лабами
+3. **Always back** — завжди можна повернутися до варіанту
+4. **Context preserved** — `?from=vN` зберігає контекст
 
-| Type | Background | Text | Purpose |
-|------|------------|------|---------|
-| Default | `#f1f5f9` | `#374151` | Home, Back |
-| Demo | `#e0e7ff` | `#4f46e5` | Link to demo |
-| Variant | `#d1fae5` | `#065f46` | Return to variant |
-
-## Student Workflow
-
-1. Open `/` → Select variant (e.g., v1)
-2. Arrive at variant page `/lr1/variants/v1/index.php`
-3. See task cards: `[Demo] [2] [3] [4] [5] [6] [7.1] [7.2]`
-4. Click task (e.g., "3") → `/lr1/variants/v1/task3.php`
-5. See test status (❌ not implemented)
-6. Click `[Demo]` → `/lr1/demo/task3.php?from=v1`
-7. Study demo solution
-8. Click `[← Variant 1]` → back to variant task
-9. Implement solution, refresh, see ✅
-10. Click `[Home]` → back to home (select variant again)
+---
 
 ## File Structure
 
 ```text
 php-labs/
-├── index.php                      # Home (variant selection)
+├── index.php                     # Home (вибір варіанту)
 │
-├── lr1/
-│   ├── demo/
-│   │   ├── index.php             # Demo index (?from=vN)
-│   │   ├── layout.php            # Demo layout
-│   │   └── task*.php             # Demo tasks
-│   │
-│   └── variants/
-│       ├── shared/
-│       │   ├── layout.php        # Variant layout
-│       │   └── style.css
-│       │
-│       └── v1/
-│           ├── index.php         # Variant page (task cards)
-│           ├── config.php
-│           └── task*.php         # Variant tasks
+├── variants/
+│   └── v1/
+│       ├── index.php             # Variant page (tabs + tasks)
+│       ├── lr1/
+│       │   ├── task2.php
+│       │   ├── task3.php
+│       │   └── ...
+│       └── lr2/
+│           └── ...
+│
+└── demo/
+    ├── lr1/
+    │   ├── task2.php
+    │   └── ...
+    └── lr2/
+        └── ...
 ```
 
-## URL Parameters
+---
 
-| Parameter | Values | Purpose |
-|-----------|--------|---------|
-| `variant` | `v1`...`v15` | Selected variant (home page) |
-| `from` | `v1`...`v15` | Origin variant (demo pages) |
+## Student Workflow
+
+1. `/` → вибрати варіант (v1)
+2. `/variants/v1/` → бачить tabs [LR1-6], вибирає LR1
+3. Клік на завдання → `/variants/v1/lr1/task3.php`
+4. Бачить ❌ 0%, клік [Demo]
+5. `/demo/lr1/task3.php?from=v1` → вивчає приклад
+6. [← Варіант 1] → назад до task page
+7. Реалізує, refresh → ✅ 100%
+8. [← Варіант] → tabs → [LR2] → наступна лаба
