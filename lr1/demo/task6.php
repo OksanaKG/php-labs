@@ -4,6 +4,7 @@
  *
  * Демонстрація: mt_rand(), арифметичні операції, масиви, сортування
  */
+require_once __DIR__ . '/layout.php';
 
 /**
  * Обчислює суму цифр числа
@@ -52,55 +53,44 @@ $d3 = $number % 10;
 $sum = sumOfDigits($number);
 $reversed = reverseNumber($number);
 $maxNum = maxFromDigits($number);
-?>
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <title>Завдання 6 — Тризначне число</title>
-    <link rel="stylesheet" href="demo.css">
-</head>
-<body class="task6-body">
-    <div class="back-button-container">
-        <button onclick="window.location.href='index.php'" class="back-button">← До демо</button>
-    </div>
-    <div class="task6-container">
-        <div class="card">
-            <h3>🎲 Випадкове тризначне число</h3>
-            <div class="number-display"><?= $number ?></div>
-            <div class="digits-row">
-                <div class="digit-box"><?= $d1 ?></div>
-                <div class="digit-box"><?= $d2 ?></div>
-                <div class="digit-box"><?= $d3 ?></div>
-            </div>
-        </div>
 
-        <div class="card" style="margin-top:20px;">
-            <h3>📊 Результати</h3>
-            <div class="result-row">
-                <div>
-                    <span>1. Сума цифр</span>
-                    <div class="func">sumOfDigits(<?= $number ?>)</div>
-                </div>
-                <span class="result-value"><?= $sum ?></span>
-            </div>
-            <div class="result-row">
-                <div>
-                    <span>2. В зворотному порядку</span>
-                    <div class="func">reverseNumber(<?= $number ?>)</div>
-                </div>
-                <span class="result-value"><?= $reversed ?></span>
-            </div>
-            <div class="result-row">
-                <div>
-                    <span>3. Найбільше можливе</span>
-                    <div class="func">maxFromDigits(<?= $number ?>)</div>
-                </div>
-                <span class="result-value"><?= $maxNum ?></span>
-            </div>
+$content = '<div class="task6-container">
+    <div class="card">
+        <h3>🎲 Випадкове тризначне число</h3>
+        <div class="number-display">' . $number . '</div>
+        <div class="digits-row">
+            <div class="digit-box">' . $d1 . '</div>
+            <div class="digit-box">' . $d2 . '</div>
+            <div class="digit-box">' . $d3 . '</div>
         </div>
-
-        <p class="hint">Оновіть сторінку для нового числа 🔄</p>
     </div>
-</body>
-</html>
+
+    <div class="card" style="margin-top:20px;">
+        <h3>📊 Результати</h3>
+        <div class="result-row">
+            <div>
+                <span>1. Сума цифр</span>
+                <div class="func">sumOfDigits(' . $number . ')</div>
+            </div>
+            <span class="result-value">' . $sum . '</span>
+        </div>
+        <div class="result-row">
+            <div>
+                <span>2. В зворотному порядку</span>
+                <div class="func">reverseNumber(' . $number . ')</div>
+            </div>
+            <span class="result-value">' . $reversed . '</span>
+        </div>
+        <div class="result-row">
+            <div>
+                <span>3. Найбільше можливе</span>
+                <div class="func">maxFromDigits(' . $number . ')</div>
+            </div>
+            <span class="result-value">' . $maxNum . '</span>
+        </div>
+    </div>
+
+    <p class="hint">Оновіть сторінку для нового числа 🔄</p>
+</div>';
+
+renderDemoLayout($content, 'Завдання 6', 'task6-body');

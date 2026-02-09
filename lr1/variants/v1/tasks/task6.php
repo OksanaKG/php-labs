@@ -13,12 +13,8 @@
  */
 function sumOfDigits(int $number): int
 {
-    $sum = 0;
-    while ($number > 0) {
-        $sum += $number % 10;
-        $number = (int)($number / 10);
-    }
-    return $sum;
+    // TODO: Реалізуйте цю функцію
+    return 0;
 }
 
 /**
@@ -29,13 +25,8 @@ function sumOfDigits(int $number): int
  */
 function productOfDigits(int $number): int
 {
-    $product = 1;
-    while ($number > 0) {
-        $digit = $number % 10;
-        $product *= $digit;
-        $number = (int)($number / 10);
-    }
-    return $product;
+    // TODO: Реалізуйте цю функцію
+    return 0;
 }
 
 /**
@@ -46,12 +37,8 @@ function productOfDigits(int $number): int
  */
 function reverseNumber(int $number): int
 {
-    $reversed = 0;
-    while ($number > 0) {
-        $reversed = $reversed * 10 + ($number % 10);
-        $number = (int)($number / 10);
-    }
-    return $reversed;
+    // TODO: Реалізуйте цю функцію
+    return 0;
 }
 
 /**
@@ -62,15 +49,6 @@ function reverseNumber(int $number): int
  */
 function maxFromDigits(int $number): int
 {
-    $digits = [];
-    while ($number > 0) {
-        $digits[] = $number % 10;
-        $number = (int)($number / 10);
-    }
-    rsort($digits);
-    $result = 0;
-    foreach ($digits as $digit) {
-        $result = $result * 10 + $digit;
-    }
-    return $result;
+    // TODO: Реалізуйте цю функцію
+    return 0;
 }

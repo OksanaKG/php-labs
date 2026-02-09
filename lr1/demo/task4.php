@@ -4,6 +4,7 @@
  *
  * Демонстрація: конструкція if-else
  */
+require_once __DIR__ . '/layout.php';
 
 /**
  * Визначає пору року за номером місяця
@@ -44,24 +45,13 @@ $styles = [
 ];
 
 $style = $styles[$season];
-?>
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <title>Завдання 4 — Пора року</title>
-    <link rel="stylesheet" href="demo.css">
-</head>
-<body class="task4-body <?= $style['class'] ?>">
-    <div class="back-button-container fixed">
-        <button onclick="window.location.href='index.php'" class="back-button">← До демо</button>
-    </div>
-    <div class="card large">
-        <div class="season-emoji"><?= $style['emoji'] ?></div>
-        <div class="season-month" style="color:<?= $style['color'] ?>">Місяць <?= $month ?></div>
-        <div class="season-month-name"><?= $monthNames[$month] ?></div>
-        <div class="season-result"><?= $season ?></div>
-        <p class="info">Функція: determineSeason(<?= $month ?>) = "<?= $season ?>"</p>
-    </div>
-</body>
-</html>
+
+$content = '<div class="card large">
+    <div class="season-emoji">' . $style['emoji'] . '</div>
+    <div class="season-month" style="color:' . $style['color'] . '">Місяць ' . $month . '</div>
+    <div class="season-month-name">' . $monthNames[$month] . '</div>
+    <div class="season-result">' . $season . '</div>
+    <p class="info">Функція: determineSeason(' . $month . ') = "' . $season . '"</p>
+</div>';
+
+renderDemoLayout($content, 'Завдання 4', 'task4-body ' . $style['class']);

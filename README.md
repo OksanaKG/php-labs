@@ -13,23 +13,31 @@
 - [LinkedIn](https://www.linkedin.com/in/viktorzhelizko/)
 - [ORCID](https://orcid.org/0009-0001-4178-6631)
 
-## Швидкий старт
+## Швидкий старт (для студентів)
 
-Склонуйте репозиторій:
+> **Повна інструкція:** [docs/STUDENT_GUIDE.md](docs/STUDENT_GUIDE.md)
+
+1. **Fork** цей репозиторій (кнопка Fork на GitHub)
+2. **Clone** свій форк:
 
 ```bash
-git clone https://github.com/victorchei/php-labs.git
+git clone https://github.com/ВАШ_ЛОГІН/php-labs.git
 cd php-labs
 ```
 
-Встановіть базове ПЗ (PHP, Git):
+3. **Додайте upstream** (для синхронізації):
 
 ```bash
-./setup/install-basic.sh   # macOS / Linux
-.\setup\install-basic.ps1  # Windows (PowerShell)
+git remote add upstream https://github.com/victorchei/php-labs.git
 ```
 
-[Запустіть локальний сервер](docs/running-project.md) та відкрийте: <http://localhost:8000>
+4. **Запустіть сервер:**
+
+```bash
+php -S localhost:8000
+```
+
+Відкрийте: <http://localhost:8000>
 
 Детальні інструкції: [Налаштування середовища](setup/README.md)
 
@@ -52,6 +60,7 @@ cd php-labs
 
 ## Документація
 
+- [Інструкція для студентів](docs/STUDENT_GUIDE.md) ⭐
 - [Запуск проєкту](docs/running-project.md)
 - [Інструкція з роботи з Git](docs/git-guide.md)
 - [Налаштування середовища](setup/README.md)

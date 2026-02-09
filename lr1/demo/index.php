@@ -2,18 +2,29 @@
 /**
  * Demo Index Page
  * Shows task cards (NO Demo link - this IS the demo)
+ * Supports ?from=vN parameter to show "back to variant" button
  */
 
 require_once dirname(__DIR__, 2) . '/shared/templates/task_cards.php';
 
+// Check if came from a variant
+$fromVariant = $_GET['from'] ?? null;
+$variantUrl = null;
+if ($fromVariant && preg_match('/^v\d+$/', $fromVariant)) {
+    $variantUrl = "/lr1/variants/{$fromVariant}/index.php";
+}
+
+// Add ?from= parameter to task URLs
+$fromParam = $fromVariant ? '?from=' . htmlspecialchars($fromVariant) : '';
+
 $tasks = [
-    'task2.php' => ['name' => 'Завдання 2'],
-    'task3.php' => ['name' => 'Завдання 3'],
-    'task4.php' => ['name' => 'Завдання 4'],
-    'task5.php' => ['name' => 'Завдання 5'],
-    'task6.php' => ['name' => 'Завдання 6'],
-    'task7_table.php' => ['name' => 'Завдання 7.1'],
-    'task7_squares.php' => ['name' => 'Завдання 7.2'],
+    "task2.php{$fromParam}" => ['name' => 'Завдання 2'],
+    "task3.php{$fromParam}" => ['name' => 'Завдання 3'],
+    "task4.php{$fromParam}" => ['name' => 'Завдання 4'],
+    "task5.php{$fromParam}" => ['name' => 'Завдання 5'],
+    "task6.php{$fromParam}" => ['name' => 'Завдання 6'],
+    "task7_table.php{$fromParam}" => ['name' => 'Завдання 7.1'],
+    "task7_squares.php{$fromParam}" => ['name' => 'Завдання 7.2'],
 ];
 ?>
 <!DOCTYPE html>
@@ -27,7 +38,9 @@ $tasks = [
     <header class="header-fixed">
         <div class="header-left">
             <a href="/" class="header-btn">Головна</a>
-            <a href="javascript:history.back()" class="header-btn">← Назад</a>
+            <?php if ($variantUrl): ?>
+            <a href="<?= htmlspecialchars($variantUrl) ?>" class="header-btn header-btn-variant">← Варіант <?= htmlspecialchars(substr($fromVariant, 1)) ?></a>
+            <?php endif; ?>
         </div>
         <div class="header-center"></div>
         <div class="header-right">

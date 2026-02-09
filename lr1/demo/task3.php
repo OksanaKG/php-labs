@@ -4,6 +4,7 @@
  *
  * Демонстрація: змінні, арифметичні операції, функції
  */
+require_once __DIR__ . '/layout.php';
 
 /**
  * Конвертує долари в гривні
@@ -28,25 +29,12 @@ $rate = 41.50;
 // Розрахунок
 $uah = convertUsdToUah($usd, $rate);
 $result = formatConversionResult($usd, $uah);
-?>
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <title>Завдання 3 — Конвертер валют</title>
-    <link rel="stylesheet" href="demo.css">
-</head>
-<body class="task3-body">
-    <div class="back-button-container">
-        <button onclick="window.location.href='index.php'" class="back-button">← До демо</button>
-    </div>
-    <div class="card">
-        <h2>💵 Конвертер USD → UAH</h2>
-        <p><strong>Курс:</strong> 1 USD = <?= $rate ?> грн</p>
-        <div class="result">
-            <?= $result ?>
-        </div>
-        <p class="info">Функція: convertUsdToUah(<?= $usd ?>, <?= $rate ?>) = <?= $uah ?></p>
-    </div>
-</body>
-</html>
+
+$content = '<div class="card">
+    <h2>💵 Конвертер USD → UAH</h2>
+    <p><strong>Курс:</strong> 1 USD = ' . $rate . ' грн</p>
+    <div class="result">' . $result . '</div>
+    <p class="info">Функція: convertUsdToUah(' . $usd . ', ' . $rate . ') = ' . $uah . '</p>
+</div>';
+
+renderDemoLayout($content, 'Завдання 3', 'task3-body');

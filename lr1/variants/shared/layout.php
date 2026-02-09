@@ -15,11 +15,12 @@
  *   renderLayout($content, $config);
  */
 
-// Use global test helper
+// Use global helpers
 require_once dirname(__DIR__, 3) . '/shared/helpers/test_helper.php';
+require_once dirname(__DIR__, 3) . '/shared/helpers/dev_reload.php';
 
 /**
- * Renders compact header status HTML
+ * Renders compact header status HTML with details button
  */
 function renderHeaderStatus(array $results): string
 {
@@ -34,11 +35,77 @@ function renderHeaderStatus(array $results): string
     $score = $results['total'] > 0 ? "{$results['passed']}/{$results['total']}" : '';
     $percent = $results['total'] > 0 ? round(($results['passed'] / $results['total']) * 100) . '%' : '';
 
-    return "<div class='header-status {$config['class']}'>"
+    $html = "<div class='header-status {$config['class']}'>"
         . "<span class='header-status-icon'>{$config['icon']}</span>"
         . "<span>{$config['text']}</span>"
         . ($score ? "<span class='header-status-score'>{$score} {$percent}</span>" : '')
         . "</div>";
+
+    // Add results button if there are tests
+    if ($results['total'] > 0) {
+        $html .= "<button class='header-btn header-btn-details' onclick='toggleTestModal()'>Результати</button>";
+    }
+
+    return $html;
+}
+
+/**
+ * Renders test details modal HTML
+ */
+function renderTestModal(array $results): string
+{
+    if (empty($results['details'])) {
+        return '';
+    }
+
+    $html = "<div id='test-modal' class='test-modal' onclick='closeModalOnBackdrop(event)'>";
+    $html .= "<div class='test-modal-content'>";
+    $html .= "<div class='test-modal-header'>";
+    $html .= "<h2>Результати тестів ({$results['passed']}/{$results['total']})</h2>";
+    $html .= "<button class='test-modal-close' onclick='toggleTestModal()'>✕</button>";
+    $html .= "</div>";
+    $html .= "<ul class='test-list'>";
+
+    foreach ($results['details'] as $detail) {
+        $class = $detail['passed'] ? 'test-item-passed' : 'test-item-failed';
+        $icon = $detail['passed'] ? '✓' : '✗';
+        $html .= "<li class='{$class}'>";
+        $html .= "<span>{$icon}</span> " . htmlspecialchars($detail['name']);
+        if (!$detail['passed'] && $detail['error']) {
+            $html .= "<br><small class='test-error'>" . htmlspecialchars($detail['error']) . "</small>";
+        }
+        $html .= "</li>";
+    }
+
+    $html .= "</ul>";
+    $html .= "</div></div>";
+
+    return $html;
+}
+
+/**
+ * Renders code modal HTML
+ */
+function renderCodeModal(string $taskFile, string $variantPath): string
+{
+    $filePath = $variantPath . '/tasks/' . str_replace('.php', '', basename($taskFile)) . '.php';
+
+    if (!file_exists($filePath)) {
+        return '';
+    }
+
+    $code = file_get_contents($filePath);
+
+    $html = "<div id='code-modal' class='test-modal' onclick='closeCodeModalOnBackdrop(event)'>";
+    $html .= "<div class='test-modal-content code-modal-content'>";
+    $html .= "<div class='test-modal-header'>";
+    $html .= "<h2>💻 Код / Завдання</h2>";
+    $html .= "<button class='test-modal-close' onclick='toggleCodeModal()'>✕</button>";
+    $html .= "</div>";
+    $html .= "<pre class='task-code'><code>" . htmlspecialchars($code) . "</code></pre>";
+    $html .= "</div></div>";
+
+    return $html;
 }
 
 /**
@@ -56,12 +123,6 @@ function renderLayout(string $content, array $config): void
     $taskInfo = $tasks[$currentTask] ?? ['name' => 'Завдання', 'test' => null];
     $taskName = $taskInfo['name'];
 
-    // Extract task number for display
-    $taskNum = '';
-    if (preg_match('/(\d+(?:\.\d+)?)/', $taskName, $matches)) {
-        $taskNum = "Завд. {$matches[1]}";
-    }
-
     // Run tests automatically
     $testResults = ['status' => 'no_tests', 'passed' => 0, 'failed' => 0, 'total' => 0, 'details' => []];
     if (isset($taskInfo['test'])) {
@@ -70,6 +131,10 @@ function renderLayout(string $content, array $config): void
 
     // Path to shared styles
     $sharedPath = '../shared';
+
+    // Demo link for current task
+    $variant = $config['variant'] ?? 'v1';
+    $demoUrl = "/{$lab}/demo/{$currentTask}?from={$variant}";
     ?>
 <!DOCTYPE html>
 <html lang="uk">
@@ -82,13 +147,22 @@ function renderLayout(string $content, array $config): void
     <header class="header-fixed">
         <div class="header-left">
             <a href="/" class="header-btn">Головна</a>
-            <a href="javascript:history.back()" class="header-btn">← Назад</a>
+            <a href="index.php" class="header-btn">← Варіант</a>
+            <a href="<?= htmlspecialchars($demoUrl) ?>" class="header-btn header-btn-demo">📖 Демо</a>
         </div>
         <div class="header-center">
             <?= renderHeaderStatus($testResults) ?>
+            <button class="header-btn header-btn-code" onclick="toggleCodeModal()">Код</button>
         </div>
         <div class="header-right">
-            <?= htmlspecialchars($variantName) ?><?= $taskNum ? " / {$taskNum}" : '' ?>
+            <span class="header-variant-label"><?= htmlspecialchars($variantName) ?></span>
+            <select class="header-task-select" onchange="if(this.value) location.href=this.value">
+                <?php foreach ($tasks as $file => $info): ?>
+                <option value="<?= htmlspecialchars($file) ?>" <?= $file === $currentTask ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($info['name']) ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
         </div>
     </header>
 
@@ -96,22 +170,48 @@ function renderLayout(string $content, array $config): void
         <?= $content ?>
     </div>
 
-    <?php if (!empty($testResults['details'])): ?>
-    <details class="test-details" style="max-width:900px;margin:20px auto;">
-        <summary>Деталі тестів (<?= $testResults['passed'] ?>/<?= $testResults['total'] ?>)</summary>
-        <ul class="test-list">
-            <?php foreach ($testResults['details'] as $detail): ?>
-            <li class="<?= $detail['passed'] ? 'test-item-passed' : 'test-item-failed' ?>">
-                <span><?= $detail['passed'] ? '✓' : '✗' ?></span>
-                <?= htmlspecialchars($detail['name']) ?>
-                <?php if (!$detail['passed'] && $detail['error']): ?>
-                <br><small class="test-error"><?= htmlspecialchars($detail['error']) ?></small>
-                <?php endif; ?>
-            </li>
-            <?php endforeach; ?>
-        </ul>
-    </details>
-    <?php endif; ?>
+    <?= renderTestModal($testResults) ?>
+    <?= renderCodeModal($currentTask, $variantPath) ?>
+
+    <script>
+    function toggleTestModal() {
+        const modal = document.getElementById('test-modal');
+        if (modal) {
+            modal.classList.toggle('open');
+            document.body.classList.toggle('modal-open');
+        }
+    }
+    function closeModalOnBackdrop(e) {
+        if (e.target.id === 'test-modal') {
+            toggleTestModal();
+        }
+    }
+    function toggleCodeModal() {
+        const modal = document.getElementById('code-modal');
+        if (modal) {
+            modal.classList.toggle('open');
+            document.body.classList.toggle('modal-open');
+        }
+    }
+    function closeCodeModalOnBackdrop(e) {
+        if (e.target.id === 'code-modal') {
+            toggleCodeModal();
+        }
+    }
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const testModal = document.getElementById('test-modal');
+            const codeModal = document.getElementById('code-modal');
+            if (testModal && testModal.classList.contains('open')) {
+                toggleTestModal();
+            }
+            if (codeModal && codeModal.classList.contains('open')) {
+                toggleCodeModal();
+            }
+        }
+    });
+    </script>
+    <?= devReloadScript() ?>
 </body>
 </html>
 <?php

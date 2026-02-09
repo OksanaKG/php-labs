@@ -33,6 +33,14 @@ function generateRandomSquares(int $n): string
     return $html;
 }
 
+// Check if came from variant
+$fromVariant = $_GET['from'] ?? null;
+$variantUrl = null;
+if ($fromVariant && preg_match('/^v\d+$/', $fromVariant)) {
+    $variantUrl = "/lr1/variants/{$fromVariant}/task7_squares.php";
+}
+$fromParam = $fromVariant ? '?from=' . htmlspecialchars($fromVariant) : '';
+
 // Кількість квадратів (demo)
 $n = 15;
 
@@ -47,9 +55,18 @@ $squares = generateRandomSquares($n);
     <link rel="stylesheet" href="demo.css">
 </head>
 <body class="task7-circles-body">
-    <div class="back-button-container fixed" style="top:60px;">
-        <button onclick="window.location.href='index.php'" class="back-button">← До демо</button>
-    </div>
+    <header class="header-fixed">
+        <div class="header-left">
+            <a href="/" class="header-btn">Головна</a>
+            <a href="index.php<?= $fromParam ?>" class="header-btn">← Демо</a>
+            <?php if ($variantUrl): ?>
+            <a href="<?= htmlspecialchars($variantUrl) ?>" class="header-btn header-btn-variant">← Варіант <?= htmlspecialchars(substr($fromVariant, 1)) ?></a>
+            <?php endif; ?>
+        </div>
+        <div class="header-center"></div>
+        <div class="header-right">Демо / Завд. 7.2</div>
+    </header>
+
     <?= $squares ?>
 
     <div class="circles-func">generateRandomSquares(<?= $n ?>)</div>

@@ -23,6 +23,14 @@ function generateColorTable(int $n): string
     return $html;
 }
 
+// Check if came from variant
+$fromVariant = $_GET['from'] ?? null;
+$variantUrl = null;
+if ($fromVariant && preg_match('/^v\d+$/', $fromVariant)) {
+    $variantUrl = "/lr1/variants/{$fromVariant}/task7_table.php";
+}
+$fromParam = $fromVariant ? '?from=' . htmlspecialchars($fromVariant) : '';
+
 // Параметри (demo)
 $n = 5;
 
@@ -36,10 +44,19 @@ $table = generateColorTable($n);
     <title>Завдання 7.1 — Кольорова таблиця</title>
     <link rel="stylesheet" href="demo.css">
 </head>
-<body class="task7-table-body">
-    <div class="back-button-container">
-        <button onclick="window.location.href='index.php'" class="back-button">← До демо</button>
-    </div>
+<body class="task7-table-body body-with-header">
+    <header class="header-fixed">
+        <div class="header-left">
+            <a href="/" class="header-btn">Головна</a>
+            <a href="index.php<?= $fromParam ?>" class="header-btn">← Демо</a>
+            <?php if ($variantUrl): ?>
+            <a href="<?= htmlspecialchars($variantUrl) ?>" class="header-btn header-btn-variant">← Варіант <?= htmlspecialchars(substr($fromVariant, 1)) ?></a>
+            <?php endif; ?>
+        </div>
+        <div class="header-center"></div>
+        <div class="header-right">Демо / Завд. 7.1</div>
+    </header>
+
     <h1>🎨 Кольорова таблиця <?= $n ?>×<?= $n ?></h1>
     <div class="params">generateColorTable(<?= $n ?>)</div>
 

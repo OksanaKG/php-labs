@@ -14,17 +14,9 @@
  */
 function generateChessboard(int $n): string
 {
-    $html = "<table border='1' cellspacing='0'>";
-    for ($i = 0; $i < $n; $i++) {
-        $html .= "<tr>";
-        for ($j = 0; $j < $n; $j++) {
-            $color = (($i + $j) % 2 === 0) ? "#fff" : "#000";
-            $html .= "<td style='width:50px; height:50px; background:$color;'></td>";
-        }
-        $html .= "</tr>";
-    }
-    $html .= "</table>";
-    return $html;
+    // TODO: Реалізуйте цю функцію
+    // Використовуйте вкладені цикли for
+    return "";
 }
 
 /**
@@ -38,13 +30,7 @@ function generateChessboard(int $n): string
  */
 function generateRandomCircles(int $n): string
 {
-    $html = "<div style='position:relative; width:100vw; height:100vh; background:#0066cc;'>";
-    for ($i = 0; $i < $n; $i++) {
-        $size = mt_rand(20, 80);
-        $top = mt_rand(5, 85);
-        $left = mt_rand(5, 85);
-        $html .= "<div style='position:absolute; width:{$size}px; height:{$size}px; background:yellow; border-radius:50%; top:{$top}%; left:{$left}%;'></div>";
-    }
-    $html .= "</div>";
-    return $html;
+    // TODO: Реалізуйте цю функцію
+    // Використовуйте цикл та mt_rand()
+    return "";
 }

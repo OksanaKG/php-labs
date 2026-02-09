@@ -8,9 +8,10 @@ $config = require __DIR__ . '/config.php';
 require_once dirname(__DIR__, 3) . '/shared/templates/task_cards.php';
 
 $variantName = $config['variantName'];
+$variant = $config['variant'];
 $lab = $config['lab'];
 $tasks = $config['tasks'];
-$demoUrl = "/{$lab}/demo/index.php";
+$demoUrl = "/{$lab}/demo/index.php?from={$variant}";
 ?>
 <!DOCTYPE html>
 <html lang="uk">
