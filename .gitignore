@@ -1,2 +1,12 @@
 .claude
 CLAUDE.md
+.env
+vendor/
+node_modules/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+*.swp
+*.swo
