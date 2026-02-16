@@ -1,9 +1,8 @@
 <?php
 /**
- * Shared layout template for LR1 Variant 3 task pages
+ * Shared layout template for LR1 Variant 30 task pages
  */
 
-// Підключаємо допоміжні скрипти викладача з кореневої папки shared
 require_once dirname(__DIR__, 3) . '/shared/helpers/dev_reload.php';
 require_once dirname(__DIR__, 3) . '/shared/helpers/paths.php';
 
@@ -11,18 +10,16 @@ function renderVariantLayout(string $content, string $taskName, string $bodyClas
 {
     $currentTask = basename($_SERVER['SCRIPT_NAME']);
 
-    // Словник завдань саме для вашого 3-го варіанту
     $variantTasks = [
-        'task1.php' => 'Завдання 1',
-        'task2.php' => 'Завдання 2',
-        'task3.php' => 'Завдання 3',
-        'task4.php' => 'Завдання 4',
-        'task5.php' => 'Завдання 5',
-        'task6_table.php' => 'Завдання 6.1',
-        'task6_squares.php' => 'Завдання 6.2',
+        'task2.php' => 'Завдання 1',
+        'task3.php' => 'Завдання 2',
+        'task4.php' => 'Завдання 3',
+        'task5.php' => 'Завдання 4',
+        'task6.php' => 'Завдання 5',
+        'task7_table.php' => 'Завдання 6.1',
+        'task7_squares.php' => 'Завдання 6.2',
     ];
 
-    // Посилання на демо-версію викладача для Варіанту 3
     $demoUrl = "/lr1/demo/{$currentTask}?from=v3";
     ?>
 <!DOCTYPE html>
@@ -57,9 +54,7 @@ function renderVariantLayout(string $content, string $taskName, string $bodyClas
     </header>
 
     <div class="content-wrapper">
-        <div class="task-card">
-            <?= $content ?>
-        </div>
+        <?= $content ?>
     </div>
 
     <?= devReloadScript() ?>
@@ -68,3 +63,5 @@ function renderVariantLayout(string $content, string $taskName, string $bodyClas
 </html>
 <?php
 }
+
+
