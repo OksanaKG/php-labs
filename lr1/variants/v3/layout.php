@@ -1,6 +1,6 @@
 <?php
 /**
- * Shared layout template for LR1 Variant 30 task pages
+ * Shared layout template for LR1 Variant 3 task pages
  */
 
 require_once dirname(__DIR__, 3) . '/shared/helpers/dev_reload.php';
@@ -11,13 +11,13 @@ function renderVariantLayout(string $content, string $taskName, string $bodyClas
     $currentTask = basename($_SERVER['SCRIPT_NAME']);
 
     $variantTasks = [
-        'task2.php' => 'Завдання 1',
-        'task3.php' => 'Завдання 2',
-        'task4.php' => 'Завдання 3',
-        'task5.php' => 'Завдання 4',
-        'task6.php' => 'Завдання 5',
-        'task7_table.php' => 'Завдання 6.1',
-        'task7_squares.php' => 'Завдання 6.2',
+        'task1.php' => 'Завдання 1',
+        'task2.php' => 'Завдання 2',
+        'task3.php' => 'Завдання 3',
+        'task4.php' => 'Завдання 4',
+        'task5.php' => 'Завдання 5',
+        'task6_table.php' => 'Завдання 6.1',
+        'task6_squares.php' => 'Завдання 6.2',
     ];
 
     $demoUrl = "/lr1/demo/{$currentTask}?from=v3";

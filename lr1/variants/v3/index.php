@@ -3,19 +3,18 @@
  * Variant 3 Index Page
  */
 
-
 require_once dirname(__DIR__, 3) . '/shared/templates/task_cards.php';
+require_once dirname(__DIR__, 3) . '/shared/helpers/paths.php';
 
 $tasks = [
-    'task1.php' => ['name' => 'Завдання 1: Текст'],
-    'task2.php' => ['name' => 'Завдання 2: Валюта'],
-    'task3.php' => ['name' => 'Завдання 3: Сезон'],
-    'task4.php' => ['name' => 'Завдання 4: Символ'],
-    'task5.php' => ['name' => 'Завдання 5: Число'],
-    'task6_table.php' => ['name' => 'Завдання 6.1: Таблиця'],
-    'task6_squares.php' => ['name' => 'Завдання 6.2: Квадрати'],
+    'task1.php' => ['name' => 'Завдання 1'],
+    'task2.php' => ['name' => 'Завдання 2'],
+    'task3.php' => ['name' => 'Завдання 3'],
+    'task4.php' => ['name' => 'Завдання 4'],
+    'task5.php' => ['name' => 'Завдання 5'],
+    'task6_table.php' => ['name' => 'Завдання 6.1'],
+    'task6_squares.php' => ['name' => 'Завдання 6.2'],
 ];
-
 
 $demoUrl = '/lr1/demo/index.php?from=v3';
 ?>
@@ -24,7 +23,8 @@ $demoUrl = '/lr1/demo/index.php?from=v3';
 <head>
     <meta charset="UTF-8">
     <title>Варіант 3 — ЛР1</title>
-    <link rel="stylesheet" href="../../demo/demo.css">
+    <link rel="stylesheet" href="<?= webPath(dirname(__DIR__, 3) . '/shared/css/base.css') ?>">
+    <link rel="stylesheet" href="<?= webPath(dirname(__DIR__, 2) . '/demo/demo.css') ?>">
 </head>
 <body class="index-page">
     <header class="header-fixed">

@@ -1,18 +1,41 @@
-<a href="index.php">← Назад</a>
-<hr>
 <?php
-$char = 'о';
-$char_lower = mb_strtolower($char, 'UTF-8');
+/**
+ * Завдання 4: Латинська літера — голосна чи приголосна (switch)
+ *
+ * Символ 'o' → "голосна"
+ */
+require_once __DIR__ . '/layout.php';
 
-echo "<h3>Голосна чи приголосна</h3>";
-echo "Символ: '$char' — ";
-
-switch ($char_lower) {
-    case 'а': case 'е': case 'є': case 'и': case 'і': 
-    case 'ї': case 'о': case 'у': case 'ю': case 'я':
-        echo "<b>голосна</b>";
-        break;
-    default:
-        echo "<b>приголосна</b>";
+function isVowelOrConsonant(string $letter): string
+{
+    switch (strtolower($letter)) {
+        case 'a':
+        case 'e':
+        case 'i':
+        case 'o':
+        case 'u':
+            return "голосна";
+        default:
+            return "приголосна";
+    }
 }
-?>
+
+// Вхідні дані (варіант 3)
+$letter = 'o';
+
+$result = isVowelOrConsonant($letter);
+$isVowel = $result === "голосна";
+
+$color = $isVowel ? "#10b981" : "#8b5cf6";
+$emoji = $isVowel ? "🔊" : "🔇";
+
+$content = '<div class="card large">
+    <div class="letter-display" style="color:' . $color . '">' . $letter . '</div>
+    <div class="letter-emoji" style="color:' . $color . '">' . $emoji . '</div>
+    <div class="letter-result">
+        Літера <strong>\'' . $letter . '\'</strong> — <span style="color:' . $color . '">' . $result . '</span>
+    </div>
+    <p class="info">isVowelOrConsonant(\'' . $letter . '\') = "' . $result . '"</p>
+</div>';
+
+renderVariantLayout($content, 'Завдання 4', 'task4-body');

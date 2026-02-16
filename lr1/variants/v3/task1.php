@@ -1,10 +1,22 @@
-<a href="index.php">← Назад</a>
-<hr>
-<div style="margin-left: 40px; font-family: 'Times New Roman', serif; line-height: 1.5;">
+<?php
+/**
+ * Завдання 1: Форматований текст
+ *
+ * Вірш про осінь з форматуванням: <b>, <i>, margin-left
+ */
+require_once __DIR__ . '/layout.php';
+
+ob_start();
+?>
+<div class="poem">
     <?php
-    echo "Осінній <b>дощ</b> стукає в шибку,<br>";
-    echo "Листя кружляє <i>повільно</i> в дворі,<br>";
-    echo "Каштани впали на стежку,<br>";
-    echo "Туман лягає на гори.";
+    echo "<p style='margin-left: 20px;'>Осінній <b>дощ</b> стукає в шибку,</p>";
+    echo "<p style='margin-left: 20px;'>Листя кружляє <i>повільно</i> в дворі,</p>";
+    echo "<p style='margin-left: 20px;'>Каштани впали на стежку,</p>";
+    echo "<p style='margin-left: 20px;'>Туман лягає на гори.</p>";
     ?>
 </div>
+<?php
+$content = ob_get_clean();
+
+renderVariantLayout($content, 'Завдання 1', 'task1-body');
