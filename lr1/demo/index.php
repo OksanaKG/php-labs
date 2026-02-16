@@ -6,6 +6,7 @@
  */
 
 require_once dirname(__DIR__, 2) . '/shared/templates/task_cards.php';
+require_once dirname(__DIR__, 2) . '/shared/helpers/paths.php';
 
 // Check if came from a variant
 $fromVariant = $_GET['from'] ?? null;
@@ -32,6 +33,7 @@ $tasks = [
 <head>
     <meta charset="UTF-8">
     <title>Демо — ЛР1</title>
+    <link rel="stylesheet" href="<?= webPath(dirname(__DIR__, 2) . '/shared/css/base.css') ?>">
     <link rel="stylesheet" href="demo.css">
 </head>
 <body class="index-page">

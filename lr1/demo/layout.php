@@ -14,6 +14,7 @@
  */
 
 require_once dirname(__DIR__, 2) . '/shared/helpers/dev_reload.php';
+require_once dirname(__DIR__, 2) . '/shared/helpers/paths.php';
 
 /**
  * Renders the full demo page layout with fixed header
@@ -52,6 +53,7 @@ function renderDemoLayout(string $content, string $taskName, string $bodyClass =
 <head>
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($taskName) ?> — Демо ЛР1</title>
+    <link rel="stylesheet" href="<?= webPath(dirname(__DIR__, 2) . '/shared/css/base.css') ?>">
     <link rel="stylesheet" href="demo.css">
 </head>
 

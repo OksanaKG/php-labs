@@ -2,6 +2,8 @@
 
 Лабораторні роботи з курсу "Серверні технології та бекенд-розробка" для студентів спеціальностей КН та ІСТ Державного університету «Житомирська політехніка».
 
+> **Для першокурсників:** Проєкт орієнтований на студентів, які щойно почали вивчати програмування. Документація написана з розрахунку на нульовий досвід — крок за кроком, з поясненнями кожного терміну.
+
 **Курс:** [learn.ztu.edu.ua](https://learn.ztu.edu.ua/course/view.php?id=7082)
 
 ## Викладач
@@ -17,22 +19,23 @@
 
 > **Повна інструкція:** [docs/STUDENT_GUIDE.md](docs/STUDENT_GUIDE.md)
 
-1. **Налаштуйте середовище** — встановіть PHP та Git: [setup/README.md](setup/README.md)
-2. **Fork** цей репозиторій (кнопка Fork на GitHub)
-3. **Clone** свій форк:
+1. **Встановіть редактор** — рекомендуємо [Visual Studio Code](https://code.visualstudio.com/) (безкоштовний). Розширення: PHP Intelephense, GitLens
+2. **Налаштуйте середовище** — встановіть PHP та Git: [setup/README.md](setup/README.md)
+3. **Fork** цей репозиторій (кнопка Fork на GitHub)
+4. **Clone** свій форк:
 
 ```bash
 git clone https://github.com/ВАШ_ЛОГІН/php-labs.git
 cd php-labs
 ```
 
-4. **Додайте upstream** (для синхронізації):
+5. **Додайте upstream** (для синхронізації):
 
 ```bash
 git remote add upstream https://github.com/victorchei/php-labs.git
 ```
 
-5. **Запустіть сервер:**
+6. **Запустіть сервер:**
 
 ```bash
 php -S localhost:8000
@@ -71,6 +74,10 @@ git push
 5. MVC паттерн (продовження)
 6. Laravel
 7. Laravel (продовження)
+
+## Відомість з оцінками
+
+[Google Таблиця](https://docs.google.com/spreadsheets/d/1M2Ufe3UGO_XIDvcZdrFz9lf5TwFHi6Ei/edit?gid=1868485203#gid=1868485203)
 
 ## Критерії прийняття
 

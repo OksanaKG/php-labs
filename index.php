@@ -21,11 +21,11 @@ if ($selectedVariant && preg_match('/^v(\d+)$/', $selectedVariant, $m)) {
 
 // Labs configuration
 $labs = [
-    'lr1' => 'Лабораторна 1 — Базові конструкції PHP',
-    'lr2' => 'Лабораторна 2 — Масиви та рядки',
-    'lr3' => 'Лабораторна 3 — ООП',
-    'lr4' => 'Лабораторна 4 — MVC',
-    'lr6' => 'Лабораторна 6 — Laravel',
+    'lr1' => ['name' => 'Лабораторна 1 — Базові конструкції PHP', 'workDir' => 'lr1/variants/v{N}'],
+    'lr2' => ['name' => 'Лабораторна 2 — Масиви та рядки', 'workDir' => null],
+    'lr3' => ['name' => 'Лабораторна 3 — ООП', 'workDir' => null],
+    'lr4' => ['name' => 'Лабораторна 4 — MVC', 'workDir' => null],
+    'lr6' => ['name' => 'Лабораторна 6 — Laravel', 'workDir' => null],
 ];
 ?>
 <!DOCTYPE html>
@@ -164,6 +164,25 @@ $labs = [
         color: #9ca3af;
         padding: 4px 12px;
     }
+
+    .lab-links a.lab-link-work {
+        color: var(--color-success-text);
+        background: var(--color-success-bg);
+    }
+
+    .lab-links a.lab-link-work:hover {
+        background: var(--color-success-bg-hover);
+    }
+
+    .lab-link-disabled {
+        font-size: 14px;
+        color: var(--color-text-hint);
+        padding: 4px 12px;
+        border-radius: 6px;
+        background: var(--color-bg-alt);
+        cursor: help;
+        border: 1px dashed var(--color-border);
+    }
     </style>
 </head>
 
@@ -175,27 +194,42 @@ $labs = [
             <p class="subtitle">Лабораторні роботи для вашого варіанту</p>
 
             <div class="lab-list">
-                <?php foreach ($labs as $labDir => $labName): ?>
+                <?php foreach ($labs as $labDir => $labInfo): ?>
                     <?php
+                    $labName = $labInfo['name'];
                     $hasDemo = file_exists(__DIR__ . "/{$labDir}/demo/index.php");
                     $hasAssignment = file_exists(__DIR__ . "/{$labDir}/assignment.md");
                     $hasVariant = file_exists(__DIR__ . "/{$labDir}/variants/v{$variantNumber}.md");
+                    $workDirPattern = $labInfo['workDir'] ?? null;
+                    $hasStudentWork = false;
+                    $studentWorkUrl = null;
+                    if ($workDirPattern) {
+                        $workPath = str_replace('{N}', (string)$variantNumber, $workDirPattern);
+                        $hasStudentWork = is_dir(__DIR__ . '/' . $workPath);
+                        $studentWorkUrl = '/' . $workPath . '/';
+                    }
                     ?>
                     <div class="lab-item">
                         <h3><?= htmlspecialchars($labName) ?></h3>
                         <div class="lab-links">
                             <?php if ($hasDemo): ?>
-                                <a href="<?= $labDir ?>/demo/">Demo</a>
+                                <a href="<?= $labDir ?>/demo/?from=v<?= $variantNumber ?>">Demo</a>
                             <?php else: ?>
                                 <span class="no-demo">Demo недоступне</span>
                             <?php endif; ?>
 
                             <?php if ($hasVariant): ?>
-                                <a href="<?= $labDir ?>/variants/v<?= $variantNumber ?>.md">Завдання (v<?= $variantNumber ?>.md)</a>
+                                <a href="https://github.com/victorchei/php-labs/blob/main/<?= $labDir ?>/variants/v<?= $variantNumber ?>.md" target="_blank">Завдання (v<?= $variantNumber ?>.md)</a>
                             <?php endif; ?>
 
                             <?php if ($hasAssignment): ?>
-                                <a href="<?= $labDir ?>/assignment.md">Опис лаби</a>
+                                <a href="https://github.com/victorchei/php-labs/blob/main/<?= $labDir ?>/assignment.md" target="_blank">Опис лаби</a>
+                            <?php endif; ?>
+
+                            <?php if ($workDirPattern && $hasStudentWork): ?>
+                                <a href="<?= htmlspecialchars($studentWorkUrl) ?>" class="lab-link-work">Виконане</a>
+                            <?php elseif ($workDirPattern && !$hasStudentWork): ?>
+                                <span class="lab-link-disabled" title="Скопіюйте v30/ → vN/ — див. STUDENT_GUIDE">Виконане</span>
                             <?php endif; ?>
                         </div>
                     </div>

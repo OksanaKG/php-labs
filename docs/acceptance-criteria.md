@@ -48,5 +48,7 @@ feat: task5 - character classification with switch
 feat: task4 - season detection with if-else
 feat: task3 - currency converter
 feat: task2 - formatted text output
-docs: task1 - environment setup
+docs: setup environment
 ```
+
+> Нумерація файлів збігається з номерами завдань в `assignment.md`: завдання 1 → `index.php`, завдання 2 → `task2.php`, ..., завдання 6 → `task7_table.php` + `task7_squares.php` (два файли на одне завдання).

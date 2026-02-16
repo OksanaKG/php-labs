@@ -1,9 +1,7 @@
 /**
  * Shared styles for LR2 demo task files
- * Imports base.css for CSS variables
+ * base.css is loaded via <link> in PHP templates (paths.php helper)
  */
-
-@import 'shared/css/base.css';
 
 /* ===== Forms ===== */
 .demo-form {

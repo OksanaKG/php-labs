@@ -1,9 +1,7 @@
 /**
  * Styles for LR3 demo pages (OOP lab)
- * Imports base.css for CSS variables
+ * base.css is loaded via <link> in PHP templates (paths.php helper)
  */
-
-@import 'shared/css/base.css';
 
 /* ===== User Card Component ===== */
 .user-card {

@@ -5,6 +5,7 @@
  */
 
 require_once dirname(__DIR__, 2) . '/shared/templates/task_cards.php';
+require_once dirname(__DIR__, 2) . '/shared/helpers/paths.php';
 
 $tasks = [
     "task1.php" => ['name' => 'Завдання 1'],
@@ -18,6 +19,7 @@ $tasks = [
 <head>
     <meta charset="UTF-8">
     <title>Демо — ЛР3</title>
+    <link rel="stylesheet" href="<?= webPath(dirname(__DIR__, 2) . '/shared/css/base.css') ?>">
     <link rel="stylesheet" href="demo.css">
 </head>
 <body class="index-page">

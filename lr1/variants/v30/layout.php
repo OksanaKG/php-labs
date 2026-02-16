@@ -4,6 +4,7 @@
  */
 
 require_once dirname(__DIR__, 3) . '/shared/helpers/dev_reload.php';
+require_once dirname(__DIR__, 3) . '/shared/helpers/paths.php';
 
 function renderVariantLayout(string $content, string $taskName, string $bodyClass = ''): void
 {
@@ -27,7 +28,8 @@ function renderVariantLayout(string $content, string $taskName, string $bodyClas
 <head>
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($taskName) ?> — Варіант 30 ЛР1</title>
-    <link rel="stylesheet" href="../../demo/demo.css">
+    <link rel="stylesheet" href="<?= webPath(dirname(__DIR__, 3) . '/shared/css/base.css') ?>">
+    <link rel="stylesheet" href="<?= webPath(dirname(__DIR__, 2) . '/demo/demo.css') ?>">
 </head>
 
 <body class="body-with-header <?= htmlspecialchars($bodyClass) ?>">

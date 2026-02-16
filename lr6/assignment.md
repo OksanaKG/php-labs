@@ -42,3 +42,16 @@
 | Email | SMTP (Mailgun/Mailtrap) — лист при створенні користувача |
 | i18n | `resources/lang` — багатомовність |
 | Тема | AdminLTE або аналог |
+
+## Корисні посилання
+
+- [Laravel Documentation](https://laravel.com/docs) — офіційна документація
+- [Laravel Eloquent ORM](https://laravel.com/docs/eloquent) — робота з БД
+- [Laravel Migrations](https://laravel.com/docs/migrations) — міграції
+- [Laravel Controllers](https://laravel.com/docs/controllers) — контролери
+- [Laravel Blade Templates](https://laravel.com/docs/blade) — шаблони Blade
+- [Laravel Authentication](https://laravel.com/docs/authentication) — авторизація
+- [Laravel Validation](https://laravel.com/docs/validation) — валідація
+- [Laravel Pagination](https://laravel.com/docs/pagination) — пагінація
+- [Laravel Mail](https://laravel.com/docs/mail) — email
+- [Laravel Localization](https://laravel.com/docs/localization) — багатомовність

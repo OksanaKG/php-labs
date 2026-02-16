@@ -1,12 +1,7 @@
 /**
  * Shared styles for all demo task files
- * Imports base.css for CSS variables
+ * base.css is loaded via <link> in PHP templates (paths.php helper)
  */
-
-/* Import global base styles (includes CSS variables) */
-@import 'shared/css/base.css';
-
-/* Base body styles - inherits full-height layout from base.css */
 
 /* Back button */
 .back-button {

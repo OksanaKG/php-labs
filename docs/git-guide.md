@@ -1,6 +1,8 @@
-# Git: Короткий посібник
+# Git: Довідник команд
 
 [← README](../README.md)
+
+> **Початківцям:** спочатку прочитайте [Інструкцію для студентів](STUDENT_GUIDE.md) — там покроковий процес роботи. Цей файл — довідник для швидкого пошуку команд.
 
 ## Корисні ресурси
 
@@ -10,93 +12,39 @@
 
 ---
 
-## Початкове налаштування
-
-```bash
-# Налаштувати ім'я та email (обов'язково!)
-git config user.name "Прізвище Ім'я"
-git config user.email "your.email@ztu.edu.ua"
-
-# Перевірити налаштування
-git config user.name
-git config user.email
-```
-
----
-
 ## Основні команди
 
-### Клонування репозиторію
+### Гілки
 
 ```bash
-git clone https://github.com/username/repo.git
-cd repo
+git checkout -b lr1           # Створити нову гілку та перейти
+git checkout lr2              # Перейти на існуючу гілку
+git branch -a                 # Переглянути всі гілки
 ```
 
-### Створення та перемикання гілок
+### Збереження змін
 
 ```bash
-# Створити нову гілку та перейти на неї
-git checkout -b lr1
-
-# Перейти на існуючу гілку
-git checkout lr2
-
-# Переглянути всі гілки
-git branch -a
+git status                    # Які файли змінено
+git add task2.php             # Додати конкретний файл
+git add .                     # Додати всі змінені файли
+git commit -m "feat: опис"   # Створити коміт
+git log --oneline             # Історія комітів
 ```
 
-### Збереження змін (commit)
+### Відправка та отримання
 
 ```bash
-# Переглянути статус (які файли змінено)
-git status
-
-# Додати файли до коміту
-git add task2.php task3.php    # конкретні файли
-git add .                       # всі змінені файли
-
-# Створити коміт
-git commit -m "feat: task2 - formatted text output"
-
-# Переглянути історію комітів
-git log --oneline
+git push -u origin lr1        # Перший push нової гілки
+git push                      # Наступні push
+git pull                      # Отримати зміни з GitHub
 ```
 
-### Відправка на сервер (push)
+### Перегляд змін
 
 ```bash
-# Перша відправка гілки
-git push -u origin lr1
-
-# Наступні відправки
-git push
-```
-
-### Отримання змін (pull)
-
-```bash
-git pull
-```
-
----
-
-## Типовий робочий процес
-
-```bash
-# 1. Створити гілку для лабораторної
-git checkout -b lr1
-
-# 2. Виконати завдання та зберегти
-git add task2.php
-git commit -m "feat: task2 - formatted text output"
-
-# 3. Виконати наступне завдання
-git add task3.php
-git commit -m "feat: task3 - currency converter"
-
-# 4. Відправити на GitHub
-git push -u origin lr1
+git diff                      # Незбережені зміни
+git diff --staged             # Зміни в staging area
 ```
 
 ---
@@ -124,14 +72,16 @@ docs: add README with setup instructions
 
 ---
 
-## Часті помилки та рішення
+## Виправлення помилок
 
-### Забули додати файли до коміту
+### Забули додати файл до коміту
 
 ```bash
 git add forgotten_file.php
 git commit --amend --no-edit
 ```
+
+> **Увага:** `--amend` змінює останній коміт. Використовуйте тільки якщо ще НЕ робили `git push`. Після push — краще зробіть новий коміт.
 
 ### Помилка в повідомленні коміту
 
@@ -139,15 +89,12 @@ git commit --amend --no-edit
 git commit --amend -m "feat: correct message"
 ```
 
+> **Увага:** те саме правило — тільки до push.
+
 ### Скасувати останній коміт (зберігши зміни)
 
 ```bash
 git reset --soft HEAD~1
 ```
 
-### Переглянути зміни перед комітом
-
-```bash
-git diff              # незбережені зміни
-git diff --staged     # зміни в staging area
-```
+> **Увага:** ця команда прибирає коміт, але зберігає ваші зміни. Файли не зникнуть. Використовуйте тільки до push.
