@@ -29,7 +29,7 @@ $content = '<div class="card">
     <p><strong>Курс:</strong> 1 EUR = ' . $rate . ' грн</p>
     <p><strong>Комісія банку:</strong> ' . $commission . '%</p>
     <div class="result">' . $uah . ' грн = ' . $eurBeforeCommission . ' євро</div>
-    <div class="result" style="margin-top:10px;background:#d1fae5;">Після комісії ' . $commission . '% — <strong>' . $eurAfterCommission . '</strong> євро</div>
+    <div class="result mt-10 result-commission">Після комісії ' . $commission . '% — <strong>' . $eurAfterCommission . '</strong> євро</div>
     <p class="info">convertUahToEur(' . $uah . ', ' . $rate . ') = ' . $eurBeforeCommission . '</p>
     <p class="info">applyCommission(' . $eurBeforeCommission . ', ' . $commission . ') = ' . $eurAfterCommission . '</p>
 </div>';

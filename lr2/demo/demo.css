@@ -383,6 +383,60 @@
   flex-wrap: wrap;
 }
 
+/* ===== Subtitle (muted text under h2) ===== */
+.demo-subtitle {
+  color: var(--color-text-muted);
+  margin-top: 0;
+}
+
+/* ===== Table label column ===== */
+.demo-table-label {
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* ===== Two-column grid ===== */
+.demo-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+/* ===== Panel (card-like container within a card) ===== */
+.demo-panel {
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.demo-panel-title-primary {
+  margin: 0 0 16px;
+  font-size: 16px;
+  color: var(--color-primary);
+}
+.demo-panel-title-success {
+  margin: 0 0 16px;
+  font-size: 16px;
+  color: var(--color-success-text);
+}
+
+/* ===== Section title variants ===== */
+.demo-section-title-success {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: var(--color-success-text);
+}
+
+/* ===== Monospace text ===== */
+.demo-mono {
+  font-family: var(--font-mono);
+}
+
+/* ===== Margin utilities ===== */
+.mt-15 {
+  margin-top: 15px;
+}
+
 /* ===== Array display ===== */
 .array-display {
   display: flex;

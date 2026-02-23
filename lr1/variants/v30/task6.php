@@ -51,7 +51,7 @@ $content = '<div class="task6-container">
         </div>
     </div>
 
-    <div class="card" style="margin-top:20px;">
+    <div class="card mt-20">
         <h3>📊 Результати</h3>
         <div class="result-row">
             <div>

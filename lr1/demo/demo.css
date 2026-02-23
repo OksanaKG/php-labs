@@ -192,6 +192,30 @@
   align-items: center;
 }
 
+/* ===== Utility: margin-top ===== */
+.mt-10 { margin-top: 10px; }
+.mt-15 { margin-top: 15px; }
+.mt-20 { margin-top: 20px; }
+
+/* ===== Result variant: commission highlight ===== */
+.result-commission {
+  background: #d1fae5;
+}
+
+/* ===== Shapes container ===== */
+.shapes-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+.shapes-container--black { background: black; }
+.shapes-container--gray { background: #374151; overflow: hidden; }
+
+/* ===== Task 7.1: Info text light ===== */
+.info-light {
+  color: rgba(255, 255, 255, 0.8);
+}
+
 /* ===== Task 7.1: Chessboard ===== */
 .task7-table-body {
   background: linear-gradient(135deg, #5d4e37 0%, #8b7355 100%);
@@ -227,6 +251,10 @@
   padding: 0;
   overflow: hidden;
 }
+.task7-circles-body .content-wrapper {
+  max-width: none;
+  padding: 0;
+}
 .circle {
   box-shadow: 0 4px 20px rgba(255, 255, 0, 0.4);
   transition: transform 0.3s, box-shadow 0.3s;
@@ -238,7 +266,7 @@
 }
 .circles-func {
   position: fixed;
-  top: 20px;
+  top: 60px;
   left: 20px;
   color: white;
   font-family: var(--font-mono);
@@ -249,7 +277,7 @@
 }
 .circles-counter {
   position: fixed;
-  top: 20px;
+  top: 60px;
   right: 20px;
   color: white;
   font-family: var(--font-sans);
