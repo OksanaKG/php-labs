@@ -22,7 +22,7 @@ if ($selectedVariant && preg_match('/^v(\d+)$/', $selectedVariant, $m)) {
 // Labs configuration
 $labs = [
     'lr1' => ['name' => 'Лабораторна 1 — Базові конструкції PHP', 'workDir' => 'lr1/variants/v{N}'],
-    'lr2' => ['name' => 'Лабораторна 2 — Масиви та рядки', 'workDir' => null],
+    'lr2' => ['name' => 'Лабораторна 2 — Масиви та рядки', 'workDir' => 'lr2/variants/v{N}'],
     'lr3' => ['name' => 'Лабораторна 3 — ООП', 'workDir' => null],
     'lr4' => ['name' => 'Лабораторна 4 — MVC', 'workDir' => null],
     'lr6' => ['name' => 'Лабораторна 6 — Laravel', 'workDir' => null],
