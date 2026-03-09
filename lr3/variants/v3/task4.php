@@ -2,16 +2,38 @@
 /**
  * Завдання 4: Клонування об'єктів
  *
- * Демонстрація: __clone() задає значення за замовчанням при копіюванні
+ * __clone() задає значення за замовчуванням при копіюванні
  */
 require_once __DIR__ . '/layout.php';
-require_once __DIR__ . '/Users.php';
+
+// Клас Doctor з __clone() методом
+class Doctor {
+    public $name;
+    public $specialization;
+    public $licenseNumber;
+    
+    public function __construct(string $name, string $specialization, string $licenseNumber) {
+        $this->name = $name;
+        $this->specialization = $specialization;
+        $this->licenseNumber = $licenseNumber;
+    }
+    
+    public function getInfo() {
+        return "Лікар: {$this->name}, Спеціалізація: {$this->specialization}, Ліцензія: {$this->licenseNumber}";
+    }
+    
+    public function __clone(): void {
+        $this->name = "Лікар";
+        $this->specialization = "";
+        $this->licenseNumber = "";
+    }
+}
 
 // Оригінальний об'єкт (через конструктор)
-$user3 = new Users('Дмитро', 'dmytro.dev', 'myP@ss789');
+$doctor3 = new Doctor('Максим Олійник', 'Хірург', 'LIC-2190');
 
-// Клонуємо — __clone() задає значення за замовчанням
-$user4 = clone $user3;
+// Клонуємо — __clone() задає значення за замовчуванням
+$doctor4 = clone $doctor3;
 
 ob_start();
 ?>
@@ -24,13 +46,13 @@ ob_start();
 <div class="code-block"><span class="code-comment">// Метод __clone() — викликається автоматично при clone</span>
 <span class="code-keyword">public function</span> <span class="code-method">__clone</span>(): <span class="code-class">void</span>
 {
-    <span class="code-variable">$this</span><span class="code-arrow">-></span><span class="code-method">name</span> = <span class="code-string">'User'</span>;
-    <span class="code-variable">$this</span><span class="code-arrow">-></span><span class="code-method">login</span> = <span class="code-string">'User'</span>;
-    <span class="code-variable">$this</span><span class="code-arrow">-></span><span class="code-method">password</span> = <span class="code-string">'qwerty'</span>;
+    <span class="code-variable">$this</span><span class="code-arrow">-></span><span class="code-method">name</span> = <span class="code-string">'Лікар'</span>;
+    <span class="code-variable">$this</span><span class="code-arrow">-></span><span class="code-method">specialization</span> = <span class="code-string">''</span>;
+    <span class="code-variable">$this</span><span class="code-arrow">-></span><span class="code-method">licenseNumber</span> = <span class="code-string">''</span>;
 }
 
 <span class="code-comment">// Створюємо 4-й об'єкт через clone</span>
-<span class="code-variable">$user4</span> = <span class="code-keyword">clone</span> <span class="code-variable">$user3</span>;</div>
+<span class="code-variable">$doctor4</span> = <span class="code-keyword">clone</span> <span class="code-variable">$doctor3</span>;</div>
 
 <div class="section-divider">
     <span class="section-divider-text">Оригінал vs Клон</span>
@@ -40,48 +62,48 @@ ob_start();
     <div class="users-grid">
         <div class="user-card">
             <div class="user-card-header">
-                <div class="user-card-avatar avatar-amber">Д</div>
+                <div class="user-card-avatar avatar-amber">М</div>
                 <div>
-                    <div class="user-card-name"><?= htmlspecialchars($user3->name) ?></div>
-                    <div class="user-card-label">$user3 <span class="user-card-badge badge-constructor">original</span></div>
+                    <div class="user-card-name"><?= htmlspecialchars($doctor3->name) ?></div>
+                    <div class="user-card-label">$doctor3 <span class="user-card-badge badge-constructor">original</span></div>
                 </div>
             </div>
             <div class="user-card-body">
                 <div class="user-card-field">
                     <span class="user-card-field-label">name</span>
-                    <span class="user-card-field-value"><?= htmlspecialchars($user3->name) ?></span>
+                    <span class="user-card-field-value"><?= htmlspecialchars($doctor3->name) ?></span>
                 </div>
                 <div class="user-card-field">
-                    <span class="user-card-field-label">login</span>
-                    <span class="user-card-field-value"><?= htmlspecialchars($user3->login) ?></span>
+                    <span class="user-card-field-label">specialization</span>
+                    <span class="user-card-field-value"><?= htmlspecialchars($doctor3->specialization) ?></span>
                 </div>
                 <div class="user-card-field">
-                    <span class="user-card-field-label">password</span>
-                    <span class="user-card-field-value"><?= htmlspecialchars($user3->password) ?></span>
+                    <span class="user-card-field-label">licenseNumber</span>
+                    <span class="user-card-field-value"><?= htmlspecialchars($doctor3->licenseNumber) ?></span>
                 </div>
             </div>
         </div>
 
         <div class="user-card">
             <div class="user-card-header">
-                <div class="user-card-avatar avatar-rose">U</div>
+                <div class="user-card-avatar avatar-rose">Л</div>
                 <div>
-                    <div class="user-card-name"><?= htmlspecialchars($user4->name) ?></div>
-                    <div class="user-card-label">$user4 <span class="user-card-badge badge-clone">clone</span></div>
+                    <div class="user-card-name"><?= htmlspecialchars($doctor4->name) ?></div>
+                    <div class="user-card-label">$doctor4 <span class="user-card-badge badge-clone">clone</span></div>
                 </div>
             </div>
             <div class="user-card-body">
                 <div class="user-card-field">
                     <span class="user-card-field-label">name</span>
-                    <span class="user-card-field-value"><?= htmlspecialchars($user4->name) ?></span>
+                    <span class="user-card-field-value"><?= htmlspecialchars($doctor4->name) ?></span>
                 </div>
                 <div class="user-card-field">
-                    <span class="user-card-field-label">login</span>
-                    <span class="user-card-field-value"><?= htmlspecialchars($user4->login) ?></span>
+                    <span class="user-card-field-label">specialization</span>
+                    <span class="user-card-field-value"><?= htmlspecialchars($doctor4->specialization) ?></span>
                 </div>
                 <div class="user-card-field">
-                    <span class="user-card-field-label">password</span>
-                    <span class="user-card-field-value"><?= htmlspecialchars($user4->password) ?></span>
+                    <span class="user-card-field-label">licenseNumber</span>
+                    <span class="user-card-field-value"><?= htmlspecialchars($doctor4->licenseNumber) ?></span>
                 </div>
             </div>
         </div>
@@ -96,16 +118,16 @@ ob_start();
     <div class="info-output-header">Результат getInfo() для оригіналу та клону</div>
     <div class="info-output-body">
         <div class="info-output-row">
-            <span class="info-output-label">$user3</span>
-            <span class="info-output-text"><?= htmlspecialchars($user3->getInfo()) ?></span>
+            <span class="info-output-label">$doctor3</span>
+            <span class="info-output-text"><?= htmlspecialchars($doctor3->getInfo()) ?></span>
         </div>
         <div class="info-output-row">
-            <span class="info-output-label">$user4</span>
-            <span class="info-output-text"><?= htmlspecialchars($user4->getInfo()) ?></span>
+            <span class="info-output-label">$doctor4</span>
+            <span class="info-output-text"><?= htmlspecialchars($doctor4->getInfo()) ?></span>
         </div>
     </div>
 </div>
 
 <?php
 $content = ob_get_clean();
-renderDemoLayout($content, 'Завдання 4', 'task4-body');
+renderVariantLayout($content, 'Завдання 4', 'task4-body');

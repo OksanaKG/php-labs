@@ -2,29 +2,39 @@
 /**
  * Завдання 2: Метод getInfo()
  *
- * Демонстрація: метод об'єкта, що виводить значення властивостей
+ * Метод об'єкта Doctor, що виводить значення властивостей
  */
 require_once __DIR__ . '/layout.php';
-require_once __DIR__ . '/Users.php';
+
+// Клас Doctor
+class Doctor {
+    public $name;
+    public $specialization;
+    public $licenseNumber;
+    
+    public function getInfo() {
+        return "Лікар: {$this->name}, Спеціалізація: {$this->specialization}, Ліцензія: {$this->licenseNumber}";
+    }
+}
 
 // Створюємо 3 об'єкти
-$user1 = new Users();
-$user1->name = 'Олександр';
-$user1->login = 'oleksandr';
-$user1->password = 'pass123';
+$doctor1 = new Doctor();
+$doctor1->name = 'Андрій Кравченко';
+$doctor1->specialization = 'Кардіолог';
+$doctor1->licenseNumber = 'LIC-4521';
 
-$user2 = new Users();
-$user2->name = 'Марія';
-$user2->login = 'maria_k';
-$user2->password = 'secure456';
+$doctor2 = new Doctor();
+$doctor2->name = 'Людмила Савченко';
+$doctor2->specialization = 'Терапевт';
+$doctor2->licenseNumber = 'LIC-7834';
 
-$user3 = new Users();
-$user3->name = 'Дмитро';
-$user3->login = 'dmytro.dev';
-$user3->password = 'myP@ss789';
+$doctor3 = new Doctor();
+$doctor3->name = 'Максим Олійник';
+$doctor3->specialization = 'Хірург';
+$doctor3->licenseNumber = 'LIC-2190';
 
-$users = [$user1, $user2, $user3];
-$labels = ['$user1', '$user2', '$user3'];
+$doctors = [$doctor1, $doctor2, $doctor3];
+$labels = ['$doctor1', '$doctor2', '$doctor3'];
 
 ob_start();
 ?>
@@ -37,11 +47,11 @@ ob_start();
 <div class="code-block"><span class="code-comment">// Метод getInfo() повертає рядок з інформацією</span>
 <span class="code-keyword">public function</span> <span class="code-method">getInfo</span>(): <span class="code-class">string</span>
 {
-    <span class="code-keyword">return</span> <span class="code-string">"Ім'я: {$this->name}, Логін: {$this->login}, Пароль: {$this->password}"</span>;
+    <span class="code-keyword">return</span> <span class="code-string">"Лікар: {\$this->name}, Спеціалізація: {\$this->specialization}, Ліцензія: {\$this->licenseNumber}"</span>;
 }
 
 <span class="code-comment">// Виклик для кожного об'єкта</span>
-<span class="code-variable">$user1</span><span class="code-arrow">-></span><span class="code-method">getInfo</span>();</div>
+<span class="code-variable">$doctor1</span><span class="code-arrow">-></span><span class="code-method">getInfo</span>();</div>
 
 <div class="section-divider">
     <span class="section-divider-text">Результат виклику</span>
@@ -50,45 +60,45 @@ ob_start();
 <div class="info-output">
     <div class="info-output-header">getInfo() — вивід для кожного об'єкта</div>
     <div class="info-output-body">
-        <?php foreach ($users as $i => $user): ?>
+        <?php foreach ($doctors as $i => $doctor): ?>
         <div class="info-output-row">
             <span class="info-output-label"><?= $labels[$i] ?></span>
-            <span class="info-output-text"><?= htmlspecialchars($user->getInfo()) ?></span>
+            <span class="info-output-text"><?= htmlspecialchars($doctor->getInfo()) ?></span>
         </div>
         <?php endforeach; ?>
     </div>
 </div>
 
 <div class="section-divider">
-    <span class="section-divider-text">Картки користувачів</span>
+    <span class="section-divider-text">Картки лікарів</span>
 </div>
 
 <div class="users-grid">
     <?php
     $avatars = ['avatar-indigo', 'avatar-green', 'avatar-amber'];
-    $initials = ['О', 'М', 'Д'];
-    foreach ($users as $i => $user):
+    $initials = ['А', 'Л', 'М'];
+    foreach ($doctors as $i => $doctor):
     ?>
     <div class="user-card">
         <div class="user-card-header">
             <div class="user-card-avatar <?= $avatars[$i] ?>"><?= $initials[$i] ?></div>
             <div>
-                <div class="user-card-name"><?= htmlspecialchars($user->name) ?></div>
+                <div class="user-card-name"><?= htmlspecialchars($doctor->name) ?></div>
                 <div class="user-card-label"><?= $labels[$i] ?>->getInfo()</div>
             </div>
         </div>
         <div class="user-card-body">
             <div class="user-card-field">
                 <span class="user-card-field-label">name</span>
-                <span class="user-card-field-value"><?= htmlspecialchars($user->name) ?></span>
+                <span class="user-card-field-value"><?= htmlspecialchars($doctor->name) ?></span>
             </div>
             <div class="user-card-field">
-                <span class="user-card-field-label">login</span>
-                <span class="user-card-field-value"><?= htmlspecialchars($user->login) ?></span>
+                <span class="user-card-field-label">specialization</span>
+                <span class="user-card-field-value"><?= htmlspecialchars($doctor->specialization) ?></span>
             </div>
             <div class="user-card-field">
-                <span class="user-card-field-label">password</span>
-                <span class="user-card-field-value"><?= htmlspecialchars($user->password) ?></span>
+                <span class="user-card-field-label">licenseNumber</span>
+                <span class="user-card-field-value"><?= htmlspecialchars($doctor->licenseNumber) ?></span>
             </div>
         </div>
     </div>
@@ -97,4 +107,4 @@ ob_start();
 
 <?php
 $content = ob_get_clean();
-renderDemoLayout($content, 'Завдання 2', 'task2-body');
+renderVariantLayout($content, 'Завдання 2', 'task2-body');

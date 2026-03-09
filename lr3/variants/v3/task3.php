@@ -2,20 +2,36 @@
 /**
  * Завдання 3: Конструктор
  *
- * Демонстрація: конструктор задає початкові значення name, login, password
+ * Конструктор задає початкові значення name, specialization, licenseNumber
  */
 require_once __DIR__ . '/layout.php';
-require_once __DIR__ . '/Users.php';
+
+// Клас Doctor з конструктором
+ class Doctor {
+    public $name;
+    public $specialization;
+    public $licenseNumber;
+    
+    public function __construct(string $name, string $specialization, string $licenseNumber) {
+        $this->name = $name;
+        $this->specialization = $specialization;
+        $this->licenseNumber = $licenseNumber;
+    }
+    
+    public function getInfo() {
+        return "Лікар: {$this->name}, Спеціалізація: {$this->specialization}, Ліцензія: {$this->licenseNumber}";
+    }
+}
 
 // Створюємо 3 об'єкти через конструктор
-$user1 = new Users('Олександр', 'oleksandr', 'pass123');
-$user2 = new Users('Марія', 'maria_k', 'secure456');
-$user3 = new Users('Дмитро', 'dmytro.dev', 'myP@ss789');
+$doctor1 = new Doctor('Андрій Кравченко', 'Кардіолог', 'LIC-4521');
+$doctor2 = new Doctor('Людмила Савченко', 'Терапевт', 'LIC-7834');
+$doctor3 = new Doctor('Максим Олійник', 'Хірург', 'LIC-2190');
 
-$users = [
-    ['obj' => $user1, 'avatar' => 'avatar-indigo', 'initial' => 'О', 'var' => '$user1'],
-    ['obj' => $user2, 'avatar' => 'avatar-green', 'initial' => 'М', 'var' => '$user2'],
-    ['obj' => $user3, 'avatar' => 'avatar-amber', 'initial' => 'Д', 'var' => '$user3'],
+$doctors = [
+    ['obj' => $doctor1, 'avatar' => 'avatar-indigo', 'initial' => 'А', 'var' => '$doctor1'],
+    ['obj' => $doctor2, 'avatar' => 'avatar-green', 'initial' => 'Л', 'var' => '$doctor2'],
+    ['obj' => $doctor3, 'avatar' => 'avatar-amber', 'initial' => 'М', 'var' => '$doctor3'],
 ];
 
 ob_start();
@@ -26,25 +42,25 @@ ob_start();
     <p>Початкові значення задаються одразу при створенні об'єкта</p>
 </div>
 
-<div class="code-block"><span class="code-comment">// Конструктор класу Users</span>
-<span class="code-keyword">public function</span> <span class="code-method">__construct</span>(<span class="code-class">string</span> <span class="code-variable">$name</span>, <span class="code-class">string</span> <span class="code-variable">$login</span>, <span class="code-class">string</span> <span class="code-variable">$password</span>)
+<div class="code-block"><span class="code-comment">// Конструктор класу Doctor</span>
+<span class="code-keyword">public function</span> <span class="code-method">__construct</span>(<span class="code-class">string</span> <span class="code-variable">$name</span>, <span class="code-class">string</span> <span class="code-variable">$specialization</span>, <span class="code-class">string</span> <span class="code-variable">$licenseNumber</span>)
 {
     <span class="code-variable">$this</span><span class="code-arrow">-></span><span class="code-method">name</span> = <span class="code-variable">$name</span>;
-    <span class="code-variable">$this</span><span class="code-arrow">-></span><span class="code-method">login</span> = <span class="code-variable">$login</span>;
-    <span class="code-variable">$this</span><span class="code-arrow">-></span><span class="code-method">password</span> = <span class="code-variable">$password</span>;
+    <span class="code-variable">$this</span><span class="code-arrow">-></span><span class="code-method">specialization</span> = <span class="code-variable">$specialization</span>;
+    <span class="code-variable">$this</span><span class="code-arrow">-></span><span class="code-method">licenseNumber</span> = <span class="code-variable">$licenseNumber</span>;
 }
 
 <span class="code-comment">// Створення через конструктор</span>
-<span class="code-variable">$user1</span> = <span class="code-keyword">new</span> <span class="code-class">Users</span>(<span class="code-string">'Олександр'</span>, <span class="code-string">'oleksandr'</span>, <span class="code-string">'pass123'</span>);
-<span class="code-variable">$user2</span> = <span class="code-keyword">new</span> <span class="code-class">Users</span>(<span class="code-string">'Марія'</span>, <span class="code-string">'maria_k'</span>, <span class="code-string">'secure456'</span>);
-<span class="code-variable">$user3</span> = <span class="code-keyword">new</span> <span class="code-class">Users</span>(<span class="code-string">'Дмитро'</span>, <span class="code-string">'dmytro.dev'</span>, <span class="code-string">'myP@ss789'</span>);</div>
+<span class="code-variable">$doctor1</span> = <span class="code-keyword">new</span> <span class="code-class">Doctor</span>(<span class="code-string">'Андрій Кравченко'</span>, <span class="code-string">'Кардіолог'</span>, <span class="code-string">'LIC-4521'</span>);
+<span class="code-variable">$doctor2</span> = <span class="code-keyword">new</span> <span class="code-class">Doctor</span>(<span class="code-string">'Людмила Савченко'</span>, <span class="code-string">'Терапевт'</span>, <span class="code-string">'LIC-7834'</span>);
+<span class="code-variable">$doctor3</span> = <span class="code-keyword">new</span> <span class="code-class">Doctor</span>(<span class="code-string">'Максим Олійник'</span>, <span class="code-string">'Хірург'</span>, <span class="code-string">'LIC-2190'</span>);</div>
 
 <div class="section-divider">
     <span class="section-divider-text">Об'єкти створені через конструктор</span>
 </div>
 
 <div class="users-grid">
-    <?php foreach ($users as $data): ?>
+    <?php foreach ($doctors as $data): ?>
     <div class="user-card">
         <div class="user-card-header">
             <div class="user-card-avatar <?= $data['avatar'] ?>"><?= $data['initial'] ?></div>
@@ -59,12 +75,12 @@ ob_start();
                 <span class="user-card-field-value"><?= htmlspecialchars($data['obj']->name) ?></span>
             </div>
             <div class="user-card-field">
-                <span class="user-card-field-label">login</span>
-                <span class="user-card-field-value"><?= htmlspecialchars($data['obj']->login) ?></span>
+                <span class="user-card-field-label">specialization</span>
+                <span class="user-card-field-value"><?= htmlspecialchars($data['obj']->specialization) ?></span>
             </div>
             <div class="user-card-field">
-                <span class="user-card-field-label">password</span>
-                <span class="user-card-field-value"><?= htmlspecialchars($data['obj']->password) ?></span>
+                <span class="user-card-field-label">licenseNumber</span>
+                <span class="user-card-field-value"><?= htmlspecialchars($data['obj']->licenseNumber) ?></span>
             </div>
         </div>
     </div>
@@ -78,7 +94,7 @@ ob_start();
 <div class="info-output">
     <div class="info-output-header">Виклик getInfo() для об'єктів, створених через конструктор</div>
     <div class="info-output-body">
-        <?php foreach ($users as $data): ?>
+        <?php foreach ($doctors as $data): ?>
         <div class="info-output-row">
             <span class="info-output-label"><?= $data['var'] ?></span>
             <span class="info-output-text"><?= htmlspecialchars($data['obj']->getInfo()) ?></span>
@@ -89,4 +105,4 @@ ob_start();
 
 <?php
 $content = ob_get_clean();
-renderDemoLayout($content, 'Завдання 3', 'task3-body');
+renderVariantLayout($content, 'Завдання 3', 'task3-body');
