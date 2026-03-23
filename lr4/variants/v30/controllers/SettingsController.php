@@ -3,12 +3,18 @@
 class SettingsController extends PageController
 {
     private array $availableColors = [
-        '#FFFAF0' => 'Ваніль',
-        '#FFF8DC' => 'Кукурудзяний',
-        '#F5F5DC' => 'Бежевий',
-        '#FAEBD7' => 'Античний білий',
-        '#FFE4C4' => 'Бісквітний',
-        '#FFDAB9' => 'Персиковий',
+        '#FFF8E1' => 'Ваніль',
+        '#E8F5E9' => 'М\'ятний',
+        '#FFCDD2' => 'Полуничний',
+        '#BBDEFB' => 'Чорничний',
+        '#E1BEE7' => 'Лавандовий',
+        '#C8E6C9' => 'Базилік',
+        '#FFAB91' => 'Гарбузовий',
+        '#B2EBF2' => 'Крижаний',
+        '#F0F4C3' => 'Лимонний',
+        '#D7CCC8' => 'Какао',
+        '#CFD8DC' => 'Сталевий',
+        '#FFFFFF' => 'Білий',
     ];
 
     public function action_color(): void
@@ -17,7 +23,7 @@ class SettingsController extends PageController
         $messageType = 'success';
 
         if ($this->request->isPost()) {
-            $color = $this->request->postString('bg_color', '#FFFAF0');
+            $color = $this->request->postString('bg_color', '#FFF8E1');
 
             if (array_key_exists($color, $this->availableColors)) {
                 $_SESSION['bg_color'] = $color;
@@ -30,7 +36,7 @@ class SettingsController extends PageController
 
         $this->render('settings/color', [
             'colors' => $this->availableColors,
-            'currentColor' => $_SESSION['bg_color'] ?? '#FFFAF0',
+            'currentColor' => $_SESSION['bg_color'] ?? '#FFF8E1',
             'message' => $message,
             'messageType' => $messageType,
         ], 'Колір фону');

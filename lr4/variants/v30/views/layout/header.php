@@ -1,5 +1,5 @@
 <?php
-$bgColor = $_SESSION['bg_color'] ?? '#FFFAF0';
+$bgColor = $_SESSION['bg_color'] ?? '#FFF8E1';
 $greetingName = is_string($_COOKIE['greeting_name'] ?? '') ? ($_COOKIE['greeting_name'] ?? '') : '';
 $greetingGender = is_string($_COOKIE['greeting_gender'] ?? '') ? ($_COOKIE['greeting_gender'] ?? '') : '';
 
