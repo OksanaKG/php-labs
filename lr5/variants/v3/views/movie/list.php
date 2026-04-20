@@ -13,6 +13,8 @@ function sortLink($column, $currentSort, $currentOrder) {
 <p>Колекція фільмів кінотеатру. CRUD через PDO (prepared statements).</p>
 
 <div class="form__actions" style="margin-bottom: 20px">
+    <a href="index.php?route=movie/gallery" class="btn">📸 Галерея фільмів</a>
+    <a href="index.php?route=activity/list" class="btn">♥️ Активності</a>
     <a href="index.php?route=movie/create" class="btn">Додати фільм</a>
 </div>
 

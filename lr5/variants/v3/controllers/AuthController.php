@@ -221,8 +221,8 @@ class AuthController extends PageController
         $len = function_exists('mb_strlen') ? mb_strlen($password) : strlen($password);
         if ($password === '') {
             $errors['password'] = 'Пароль є обов\'язковим.';
-        } elseif ($len < 6) {
-            $errors['password'] = 'Пароль має бути не менше 6 символів.';
+        } elseif ($len < 4) {
+            $errors['password'] = 'Пароль має бути не менше 4 символів.';
         }
 
         $passwordConfirm = $data['password_confirm'] ?? '';

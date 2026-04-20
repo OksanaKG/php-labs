@@ -61,6 +61,11 @@ $errors = $errors ?? [];
         <?php endif; ?>
     </div>
 
+    <div class="form__group">
+        <label for="m_description" class="form__label">Опис фільму</label>
+        <textarea id="m_description" name="description" class="form__input" rows="4"><?= htmlspecialchars($movie['description'] ?? '') ?></textarea>
+    </div>
+
     <div class="form__actions">
         <button type="submit" class="btn">Зберегти</button>
         <a href="index.php?route=movie/list" class="btn btn--secondary">Скасувати</a>
