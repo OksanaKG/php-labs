@@ -43,8 +43,9 @@ $old = $old ?? [];
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    background: #f9f9f9;
+    background: inherit;
     border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.04);
 }
 
 .form-group {
@@ -64,11 +65,13 @@ $old = $old ?? [];
 .form-control {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(255,255,255,0.06);
     border-radius: 4px;
     font-size: 14px;
     font-family: inherit;
     box-sizing: border-box;
+    background: rgba(0,0,0,0.35);
+    color: inherit;
 }
 
 .form-control:focus {
@@ -109,13 +112,11 @@ $old = $old ?? [];
     border-radius: 4px;
     text-decoration: none;
     display: inline-block;
-    border: 1px solid #ddd;
-    background: white;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: inherit;
     cursor: pointer;
     font-size: 14px;
 }
 
-.btn:hover {
-    background: #f0f0f0;
-}
+.btn:hover { background: rgba(255,255,255,0.03); }
 </style>

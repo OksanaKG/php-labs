@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS movies (
     year INTEGER DEFAULT 0,
     duration_min INTEGER DEFAULT 0,
     poster_image VARCHAR(255) DEFAULT '',
+    age_limit INTEGER DEFAULT 0,
     description TEXT DEFAULT '',
     rating DECIMAL(3,1) DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -173,18 +174,18 @@ CREATE TABLE IF NOT EXISTS movie_statistics (
     FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE
 );
 
--- Seed movies with posters
+-- Seed movies with posters (українські назви)
 INSERT INTO movies (title, director, genre, year, duration_min, description) VALUES
-    ('Pulp Fiction', 'Quentin Tarantino', 'Crime', 1994, 154, 'Легендарний фільм про злочинців і гангстерів'),
-    ('The Shawshank Redemption', 'Frank Darabont', 'Drama', 1994, 142, 'Історія дружби у в''язниці'),
-    ('Inception', 'Christopher Nolan', 'Sci-Fi', 2010, 148, 'Подорож у світ снів'),
-    ('The Godfather', 'Francis Ford Coppola', 'Crime', 1972, 175, 'Влада мафіози'),
-    ('Forrest Gump', 'Robert Zemeckis', 'Drama', 1994, 142, 'Життя незвичайної людини'),
-    ('The Matrix', 'The Wachowskis', 'Sci-Fi', 1999, 136, 'Реальність чи ілюзія?'),
-    ('Titanic', 'James Cameron', 'Romance', 1997, 195, 'Любов на борту легендарного корабля'),
-    ('Avatar', 'James Cameron', 'Sci-Fi', 2009, 162, 'Дослідження іншої планети'),
-    ('The Dark Knight', 'Christopher Nolan', 'Action', 2008, 152, 'Бетмен проти Джокера'),
-    ('Schindler''s List', 'Steven Spielberg', 'Historical', 1993, 195, 'Історія спасіння');
+    ('Кримінальне чтиво', 'Quentin Tarantino', 'Crime', 1994, 154, 'Легендарний фільм про злочинців і гангстерів'),
+    ('Втеча з Шоушенка', 'Frank Darabont', 'Drama', 1994, 142, 'Історія дружби у в''язниці'),
+    ('Початок', 'Christopher Nolan', 'Sci-Fi', 2010, 148, 'Подорож у світ снів'),
+    ('Хрещений батько', 'Francis Ford Coppola', 'Crime', 1972, 175, 'Влада мафіози'),
+    ('Форрест Гамп', 'Robert Zemeckis', 'Drama', 1994, 142, 'Життя незвичайної людини'),
+    ('Матриця', 'The Wachowskis', 'Sci-Fi', 1999, 136, 'Реальність чи ілюзія?'),
+    ('Титанік', 'James Cameron', 'Romance', 1997, 195, 'Любов на борту легендарного корабля'),
+    ('Аватар', 'James Cameron', 'Sci-Fi', 2009, 162, 'Дослідження іншої планети'),
+    ('Темний лицар', 'Christopher Nolan', 'Action', 2008, 152, 'Бетмен проти Джокера'),
+    ('Список Шиндлера', 'Steven Spielberg', 'Historical', 1993, 195, 'Історія спасіння');
 
 -- Insert default hall
 INSERT INTO halls (name, rows, seats_per_row) VALUES ('Основна зала', 10, 12);
@@ -203,3 +204,11 @@ INSERT INTO activities (title, description, activity_type) VALUES
     ('Благодійна демонстрація "Рятування"', 'Фільми для збору коштів на благодійність', 'charity'),
     ('Дитячий кіноклуб', 'Напівлегалне кіно для дітей з цукерками', 'kids'),
     ('Нічна киножуття', 'Марафон фільмів з 23:00 до 7:00', 'special');
+
+-- Sample screenings to populate site
+INSERT INTO screenings (movie_id, hall_id, screening_datetime, price_per_ticket) VALUES
+    ((SELECT id FROM movies WHERE title = 'Кримінальне чтиво' LIMIT 1), 1, datetime('now', '+1 day', '19:00'), 150.00),
+    ((SELECT id FROM movies WHERE title = 'Втеча з Шоушенка' LIMIT 1), 1, datetime('now', '+1 day', '21:30'), 160.00),
+    ((SELECT id FROM movies WHERE title = 'Початок' LIMIT 1), 1, datetime('now', '+2 day', '18:30'), 180.00),
+    ((SELECT id FROM movies WHERE title = 'Хрещений батько' LIMIT 1), 1, datetime('now', '+2 day', '20:30'), 140.00),
+    ((SELECT id FROM movies WHERE title = 'Матриця' LIMIT 1), 1, datetime('now', '+3 day', '19:00'), 170.00);

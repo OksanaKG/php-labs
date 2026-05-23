@@ -18,9 +18,10 @@ $currentRoute = $_GET['route'] ?? 'index/main';
 $navItems = [
     'index/main' => 'Головна',
     'guestbook/index' => 'Гостьова книга',
-    'upload/index' => 'Завантаження',
     'folder/create' => 'Каталоги',
     'movie/list' => 'Фільми',
+    'movie/my_tickets' => 'Мої квитки',
+        'admin/index' => 'Адмін',
     'settings/color' => 'Налаштування',
 ];
 ?>
@@ -29,7 +30,7 @@ $navItems = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($pageTitle ?? 'Кінотеатр') ?> — Кінотеатр (v3)</title>
+    <title><?= htmlspecialchars($pageTitle ?? 'Кінотеатр') ?> — Кінотеатр</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="<?= htmlspecialchars($bodyClass) ?>">
@@ -41,6 +42,7 @@ $navItems = [
                     <?php if ($greetingText !== ''): ?>
                         <span class="header__greeting"><?= $greetingText ?></span>
                     <?php endif; ?>
+                    <button id="themeToggleHeader" class="header__theme-toggle" title="Toggle theme">🌙</button>
                     <div class="header__auth">
                         <?php if ($isLoggedIn): ?>
                             <a href="index.php?route=auth/logout" class="header__auth-link header__auth-link--logout">Вийти</a>
@@ -51,18 +53,20 @@ $navItems = [
                     </div>
                 </div>
             </div>
-            <nav class="nav">
-                <ul class="nav__list">
-                    <?php foreach ($navItems as $route => $label): ?>
-                        <li class="nav__item">
-                            <a href="index.php?route=<?= $route ?>"
-                               class="nav__link<?= $currentRoute === $route ? ' nav__link--active' : '' ?>">
-                                <?= htmlspecialchars($label) ?>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </nav>
+                    <nav class="nav">
+                        <ul class="nav__list">
+                            <?php foreach ($navItems as $route => $label): ?>
+                                <?php if ($route === 'movie/my_tickets' && !isset($_SESSION['user_id'])) continue; ?>
+                                <?php if ($route === 'admin/index' && !(isset($_SESSION['user_id']) && $_SESSION['user_id'] === 1)) continue; ?>
+                                <li class="nav__item">
+                                    <a href="index.php?route=<?= $route ?>"
+                                       class="nav__link<?= $currentRoute === $route ? ' nav__link--active' : '' ?>">
+                                        <?= htmlspecialchars($label) ?>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </nav>
         </div>
     </header>
     <main class="main" id="main-content">
@@ -74,3 +78,26 @@ $navItems = [
             ?>
                 <div class="alert alert--success" role="alert"><?= htmlspecialchars($flash) ?></div>
             <?php endif; ?>
+    <script>
+        (function(){
+            const btn = document.getElementById('themeToggleHeader');
+            function updateIcon(){ btn.textContent = document.body.classList.contains('bg-light-theme') ? '🌙' : '☀️'; }
+            // initialize from localStorage or body class
+            const stored = localStorage.getItem('siteTheme');
+            if (stored === 'light') { document.body.classList.add('bg-light-theme'); document.body.classList.remove('bg-dark-theme'); }
+            else if (stored === 'dark') { document.body.classList.add('bg-dark-theme'); document.body.classList.remove('bg-light-theme'); }
+            updateIcon();
+            btn.addEventListener('click', function(){
+                if (document.body.classList.contains('bg-light-theme')) {
+                    document.body.classList.remove('bg-light-theme');
+                    document.body.classList.add('bg-dark-theme');
+                    localStorage.setItem('siteTheme','dark');
+                } else {
+                    document.body.classList.remove('bg-dark-theme');
+                    document.body.classList.add('bg-light-theme');
+                    localStorage.setItem('siteTheme','light');
+                }
+                updateIcon();
+            });
+        })();
+    </script>

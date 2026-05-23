@@ -2,8 +2,7 @@
 $movies = $movies ?? [];
 ?>
 
-<h1>Галерея фільмів</h1>
-<p>Виберіть фільм для перегляду детальної інформації, коментарів та голосувань.</p>
+<!-- Gallery title removed per design; movies show immediately -->
 
 <div class="form__actions" style="margin-bottom: 20px">
     <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] === 1): ?>
@@ -16,7 +15,7 @@ $movies = $movies ?? [];
 <?php else: ?>
     <div class="movie-gallery">
         <?php foreach ($movies as $movie): ?>
-            <div class="movie-card">
+            <div class="movie-card" data-movie-id="<?= (int)$movie['id'] ?>">
                 <div class="movie-poster">
                     <?php if (!empty($movie['poster_image'])): ?>
                         <img src="<?= htmlspecialchars($movie['poster_image']) ?>" alt="<?= htmlspecialchars($movie['title']) ?>">
@@ -27,7 +26,19 @@ $movies = $movies ?? [];
                     <?php endif; ?>
                 </div>
                 <div class="movie-info">
+                    <?php if (!empty($movie['age_limit']) && (int)$movie['age_limit'] > 0): ?>
+                        <div class="age-badge"><?= (int)$movie['age_limit'] ?>+</div>
+                    <?php endif; ?>
                     <h3 class="movie-title"><?= htmlspecialchars($movie['title']) ?></h3>
+                    <div class="movie-rating">
+                        <?php $rating = isset($movie['rating']) ? (float)$movie['rating'] : 0; ?>
+                        <span class="rating-value"><?= $rating > 0 ? number_format($rating,1) : '—' ?></span>
+                        <span class="rating-stars">
+                            <?php for ($i=1;$i<=5;$i++): ?>
+                                <span class="star<?= $i <= round($rating/2) ? ' active' : '' ?>">★</span>
+                            <?php endfor; ?>
+                        </span>
+                    </div>
                     <p class="movie-director">Режисер: <?= htmlspecialchars($movie['director']) ?></p>
                     <p class="movie-year"><?= (int)$movie['year'] ?> • <?= (int)$movie['duration_min'] ?> хв</p>
                     <p class="movie-genre"><?= htmlspecialchars($movie['genre']) ?></p>
@@ -37,7 +48,7 @@ $movies = $movies ?? [];
                         <span class="stat-item">👍 <?= (int)($movie['reactions_count'] ?? 0) ?></span>
                     </div>
 
-                    <a href="index.php?route=movie/detail&id=<?= (int)$movie['id'] ?>" class="btn btn-primary">Детальна інформація</a>
+                    <a href="#" class="btn btn-primary btn-open-modal">Детальна інформація</a>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -53,11 +64,12 @@ $movies = $movies ?? [];
 }
 
 .movie-card {
-    background: #f9f9f9;
+    background: inherit;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     transition: transform 0.3s, box-shadow 0.3s;
+    color: inherit;
 }
 
 .movie-card:hover {
@@ -99,7 +111,7 @@ $movies = $movies ?? [];
 .movie-title {
     margin: 0 0 8px 0;
     font-size: 16px;
-    color: #333;
+    color: inherit;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -108,7 +120,7 @@ $movies = $movies ?? [];
 .movie-director {
     margin: 4px 0;
     font-size: 13px;
-    color: #666;
+    color: inherit;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -130,7 +142,7 @@ $movies = $movies ?? [];
 
 .stat-item {
     padding: 4px 8px;
-    background: #e9ecef;
+    background: rgba(255,255,255,0.04);
     border-radius: 4px;
 }
 
@@ -152,3 +164,75 @@ $movies = $movies ?? [];
     background: #5568d3;
 }
 </style>
+
+<!-- Modal placeholder -->
+<div id="movieModal" class="modal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:9999;">
+    <div class="modal-content card" style="padding:20px;max-width:900px;width:95%;max-height:90%;overflow:auto;position:relative;">
+        <div style="position:absolute;right:12px;top:12px;display:flex;gap:8px;align-items:center;">
+            <button id="modalThemeToggle" title="Toggle theme" style="border:none;background:transparent;color:inherit;font-size:18px;cursor:pointer">🌙</button>
+            <button id="modalClose" style="border:none;background:transparent;color:inherit;padding:6px 10px;border-radius:4px;cursor:pointer">✕</button>
+        </div>
+        <div id="modalBody">Завантаження...</div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('movieModal');
+    const modalBody = document.getElementById('modalBody');
+    const closeBtn = document.getElementById('modalClose');
+    const themeToggle = document.getElementById('modalThemeToggle');
+
+    // initialize theme toggle icon
+    function updateThemeIcon() {
+        if (document.body.classList.contains('bg-light-theme')) themeToggle.textContent = '🌙';
+        else themeToggle.textContent = '☀️';
+    }
+    updateThemeIcon();
+    themeToggle.addEventListener('click', function(){
+        if (document.body.classList.contains('bg-light-theme')) {
+            document.body.classList.remove('bg-light-theme');
+            document.body.classList.add('bg-dark-theme');
+        } else {
+            document.body.classList.remove('bg-dark-theme');
+            document.body.classList.add('bg-light-theme');
+        }
+        updateThemeIcon();
+    });
+
+    function openModal(html) {
+        modalBody.innerHTML = html;
+        // hide close button for compact movie-detail partial
+        if (modalBody.querySelector('.movie-detail')) {
+            closeBtn.style.display = 'none';
+        } else {
+            closeBtn.style.display = '';
+        }
+        // mark modal open so header auth can be hidden
+        document.body.classList.add('modal-open');
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        modal.style.display = 'none';
+        modalBody.innerHTML = '';
+        document.body.classList.remove('modal-open');
+    }
+
+    document.querySelectorAll('.btn-open-modal').forEach(function(btn){
+        btn.addEventListener('click', function(e){
+            e.preventDefault();
+            const card = e.target.closest('.movie-card');
+            const id = card ? card.getAttribute('data-movie-id') : null;
+            if (!id) return;
+            fetch('index.php?route=movie/api_detail&id=' + encodeURIComponent(id))
+                .then(r => r.text())
+                .then(html => openModal(html))
+                .catch(() => openModal('<p>Не вдалося завантажити деталі.</p>'));
+        });
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e){ if (e.target === modal) closeModal(); });
+});
+</script>

@@ -12,10 +12,12 @@ function sortLink($column, $currentSort, $currentOrder) {
 <h1>Фільми</h1>
 <p>Колекція фільмів кінотеатру. CRUD через PDO (prepared statements).</p>
 
-<div class="form__actions" style="margin-bottom: 20px">
+    <div class="form__actions" style="margin-bottom: 20px">
     <a href="index.php?route=movie/gallery" class="btn">📸 Галерея фільмів</a>
     <a href="index.php?route=activity/list" class="btn">♥️ Активності</a>
-    <a href="index.php?route=movie/create" class="btn">Додати фільм</a>
+    <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] === 1): ?>
+        <a href="index.php?route=movie/create" class="btn">Додати фільм</a>
+    <?php endif; ?>
 </div>
 
 <?php if (empty($movies)): ?>
@@ -43,12 +45,16 @@ function sortLink($column, $currentSort, $currentOrder) {
                     <td><?= (int)$m['year'] ?></td>
                     <td><?= (int)$m['duration_min'] ?></td>
                     <td class="table__actions">
-                        <a href="index.php?route=movie/edit&id=<?= (int)$m['id'] ?>" class="btn btn--small">Редагувати</a>
-                        <form method="POST" action="index.php?route=movie/delete" style="display:inline"
-                              onsubmit="return confirm('Видалити фільм?')">
-                            <input type="hidden" name="id" value="<?= (int)$m['id'] ?>">
-                            <button type="submit" class="btn btn--small btn--danger">Видалити</button>
-                        </form>
+                        <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] === 1): ?>
+                            <a href="index.php?route=movie/edit&id=<?= (int)$m['id'] ?>" class="btn btn--small">Редагувати</a>
+                            <form method="POST" action="index.php?route=movie/delete" style="display:inline"
+                                  onsubmit="return confirm('Видалити фільм?')">
+                                <input type="hidden" name="id" value="<?= (int)$m['id'] ?>">
+                                <button type="submit" class="btn btn--small btn--danger">Видалити</button>
+                            </form>
+                        <?php else: ?>
+                            —
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

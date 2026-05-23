@@ -55,28 +55,33 @@ $screenings = $screenings ?? [];
                 </div>
             </div>
         </div>
-    </div>
+        
+        <div class="movie-screenings-sidebar">
+            <h3>Сеанси</h3>
+            <?php
+                $byDate = [];
+                foreach ($screenings as $s) {
+                    $d = substr($s['screening_datetime'], 0, 10);
+                    $byDate[$d][] = $s;
+                }
+                $dates = array_keys($byDate);
+            ?>
+            <?php if (empty($dates)): ?>
+                <p class="text-muted">Поки що немає сеансів.</p>
+            <?php else: ?>
+                <label for="screening_date">Оберіть день:</label>
+                <select id="screening_date" class="form__select">
+                    <?php foreach ($dates as $i => $d): ?>
+                        <option value="<?= htmlspecialchars($d) ?>" <?= $i === 0 ? 'selected' : '' ?>><?= date('d.m.Y (D)', strtotime($d)) ?></option>
+                    <?php endforeach; ?>
+                </select>
 
-    <!-- Screenings & Tickets -->
-    <?php if (!empty($screenings)): ?>
-        <div class="screenings-section">
-            <h3>Сеанси і квитки</h3>
-            <div class="screenings-list">
-                <?php foreach ($screenings as $screening): ?>
-                    <div class="screening-card">
-                        <p><strong>Зала:</strong> <?= htmlspecialchars($screening['hall_name']) ?></p>
-                        <p><strong>Час:</strong> <?= htmlspecialchars($screening['screening_datetime']) ?></p>
-                        <p><strong>Ціна:</strong> ₴<?= number_format($screening['price_per_ticket'], 2) ?></p>
-                        <?php if (isset($_SESSION['user_id'])): ?>
-                            <a href="index.php?route=movie/buy_ticket&screening_id=<?= (int)$screening['id'] ?>" class="btn btn-success">Купити квитки</a>
-                        <?php else: ?>
-                            <a href="index.php?route=auth/login" class="btn">Увійти для покупки</a>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+                <div id="times_list" style="margin-top:12px;">
+                    <!-- times inserted by JS -->
+                </div>
+            <?php endif; ?>
         </div>
-    <?php endif; ?>
+    </div>
 
     <!-- Polls -->
     <?php if (!empty($polls)): ?>
@@ -178,7 +183,7 @@ $screenings = $screenings ?? [];
 
 .movie-header {
     display: grid;
-    grid-template-columns: 250px 1fr;
+    grid-template-columns: 250px 1fr 300px;
     gap: 30px;
     margin-bottom: 40px;
     padding-bottom: 20px;
@@ -251,19 +256,20 @@ $screenings = $screenings ?? [];
     display: contents;
 }
 
-.reaction-btn {
+    .reaction-btn {
     padding: 8px 16px;
     border: 2px solid #ddd;
-    background: white;
     border-radius: 20px;
     cursor: pointer;
     font-size: 14px;
     transition: all 0.3s;
+    background: inherit;
+    color: inherit;
 }
 
-.reaction-btn:hover {
+    .reaction-btn:hover {
     border-color: #667eea;
-    background: #f0f4ff;
+    background: rgba(255,255,255,0.06);
 }
 
 .reaction-btn.active {
@@ -277,9 +283,9 @@ $screenings = $screenings ?? [];
     margin-left: 5px;
 }
 
-.user-reaction {
+    .user-reaction {
     font-size: 13px;
-    color: #666;
+    color: inherit;
     margin: 10px 0 0 0;
 }
 
@@ -290,11 +296,12 @@ $screenings = $screenings ?? [];
     margin-top: 15px;
 }
 
-.screening-card {
-    background: white;
+    .screening-card {
+    background: inherit;
     padding: 15px;
     border-radius: 6px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(255,255,255,0.04);
+    color: inherit;
 }
 
 .screening-card p {
@@ -317,9 +324,10 @@ $screenings = $screenings ?? [];
     background: #218838;
 }
 
-.polls-section {
-    background: white;
+    .polls-section {
+    background: inherit;
     border-left: 4px solid #667eea;
+    color: inherit;
 }
 
 .poll-card {
@@ -340,11 +348,12 @@ $screenings = $screenings ?? [];
     margin: 15px 0;
 }
 
-.poll-option {
-    background: white;
+    .poll-option {
+    background: inherit;
     padding: 10px;
     border-radius: 4px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(255,255,255,0.04);
+    color: inherit;
 }
 
 .option-row {
@@ -392,11 +401,12 @@ $screenings = $screenings ?? [];
     margin-top: 8px;
 }
 
-.comment-form {
-    background: white;
+    .comment-form {
+    background: inherit;
     padding: 20px;
     border-radius: 6px;
     margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.04);
 }
 
 .form-group {
@@ -445,21 +455,22 @@ $screenings = $screenings ?? [];
     gap: 15px;
 }
 
-.comment-item {
-    background: white;
+    .comment-item {
+    background: inherit;
     padding: 15px;
     border-radius: 6px;
     border-left: 3px solid #667eea;
+    border: 1px solid rgba(255,255,255,0.04);
 }
 
-.comment-header {
+    .comment-header {
     display: flex;
     gap: 15px;
     margin-bottom: 10px;
     flex-wrap: wrap;
     align-items: center;
     font-size: 13px;
-    color: #666;
+    color: inherit;
 }
 
 .comment-date,
@@ -467,10 +478,10 @@ $screenings = $screenings ?? [];
     margin-left: auto;
 }
 
-.comment-text {
+    .comment-text {
     margin: 0;
     line-height: 1.5;
-    color: #333;
+    color: inherit;
 }
 
 .text-muted {
@@ -498,6 +509,39 @@ $screenings = $screenings ?? [];
     }
 }
 </style>
+
+<script>
+// Populate times list based on selected date
+document.addEventListener('DOMContentLoaded', function(){
+    const byDate = {};
+    <?php foreach ($screenings as $s): $d = substr($s['screening_datetime'],0,10); $time = substr($s['screening_datetime'],11,5); ?>
+        if (!byDate['<?= $d ?>']) byDate['<?= $d ?>'] = [];
+        byDate['<?= $d ?>'].push({id: <?= (int)$s['id'] ?>, time: '<?= $time ?>', price: '<?= number_format($s['price_per_ticket'],2) ?>', hall: '<?= htmlspecialchars($s['hall_name']) ?>'});
+    <?php endforeach; ?>
+
+    const dateSelect = document.getElementById('screening_date');
+    const timesList = document.getElementById('times_list');
+
+    function renderTimes(day) {
+        timesList.innerHTML = '';
+        const arr = byDate[day] || [];
+        arr.forEach(function(s){
+            const div = document.createElement('div');
+            div.className = 'screening-card';
+            div.innerHTML = '<p><strong>Зала:</strong> '+s.hall+'</p>'+
+                            '<p><strong>Час:</strong> '+s.time+'</p>'+
+                            '<p><strong>Ціна:</strong> ₴'+s.price+'</p>'+
+                            (<?= isset($_SESSION['user_id']) ? 'true' : 'false' ?> ? '<a class="btn btn-success" href="index.php?route=movie/buy_ticket&screening_id='+s.id+'">Купити квитки</a>' : '<a class="btn" href="index.php?route=auth/login">Увійдіть для покупки</a>');
+            timesList.appendChild(div);
+        });
+    }
+
+    if (dateSelect) {
+        renderTimes(dateSelect.value);
+        dateSelect.addEventListener('change', function(){ renderTimes(this.value); });
+    }
+});
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

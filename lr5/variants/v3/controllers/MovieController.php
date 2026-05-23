@@ -48,10 +48,24 @@ class MovieController extends PageController
             $old = $this->request->allPost();
             $errors = $this->validate($old);
 
+            // Handle poster upload (optional)
+            if (isset($_FILES['poster_image']) && $_FILES['poster_image']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = DATA_DIR . '/uploads';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+                $ext = strtolower(pathinfo($_FILES['poster_image']['name'], PATHINFO_EXTENSION));
+                $safeName = time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+                $dest = $uploadDir . '/' . $safeName;
+                if (move_uploaded_file($_FILES['poster_image']['tmp_name'], $dest)) {
+                    $old['poster_image'] = 'data/uploads/' . $safeName;
+                }
+            }
+
             if (empty($errors)) {
                 $stmt = $this->db->prepare(
-                    'INSERT INTO movies (title, director, genre, year, duration_min, description)
-                     VALUES (:title, :director, :genre, :year, :duration_min, :description)'
+                    'INSERT INTO movies (title, director, genre, year, duration_min, poster_image, description, age_limit)
+                     VALUES (:title, :director, :genre, :year, :duration_min, :poster_image, :description, :age_limit)'
                 );
                 $stmt->execute([
                     ':title' => trim($old['title']),
@@ -59,7 +73,9 @@ class MovieController extends PageController
                     ':genre' => trim($old['genre'] ?? ''),
                     ':year' => (int)($old['year'] ?? 0),
                     ':duration_min' => (int)($old['duration_min'] ?? 0),
+                    ':poster_image' => $old['poster_image'] ?? '',
                     ':description' => trim($old['description'] ?? ''),
+                    ':age_limit' => isset($old['age_limit']) ? (int)$old['age_limit'] : 0,
                 ]);
 
                 $_SESSION['flash_success'] = 'Фільм "' . trim($old['title']) . '" додано!';
@@ -102,11 +118,24 @@ class MovieController extends PageController
         if ($this->request->isPost()) {
             $data = $this->request->allPost();
             $errors = $this->validate($data);
+            // Handle poster upload if provided
+            if (isset($_FILES['poster_image']) && $_FILES['poster_image']['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = DATA_DIR . '/uploads';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+                $ext = strtolower(pathinfo($_FILES['poster_image']['name'], PATHINFO_EXTENSION));
+                $safeName = time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+                $dest = $uploadDir . '/' . $safeName;
+                if (move_uploaded_file($_FILES['poster_image']['tmp_name'], $dest)) {
+                    $data['poster_image'] = 'data/uploads/' . $safeName;
+                }
+            }
 
             if (empty($errors)) {
                 $stmt = $this->db->prepare(
                     'UPDATE movies SET title = :title, director = :director, genre = :genre,
-                     year = :year, duration_min = :duration_min, description = :description WHERE id = :id'
+                     year = :year, duration_min = :duration_min, poster_image = :poster_image, description = :description, age_limit = :age_limit WHERE id = :id'
                 );
                 $stmt->execute([
                     ':title' => trim($data['title']),
@@ -114,7 +143,9 @@ class MovieController extends PageController
                     ':genre' => trim($data['genre'] ?? ''),
                     ':year' => (int)($data['year'] ?? 0),
                     ':duration_min' => (int)($data['duration_min'] ?? 0),
+                    ':poster_image' => $data['poster_image'] ?? $movie['poster_image'] ?? '',
                     ':description' => trim($data['description'] ?? ''),
+                    ':age_limit' => isset($data['age_limit']) ? (int)$data['age_limit'] : ($movie['age_limit'] ?? 0),
                     ':id' => $id,
                 ]);
 
@@ -308,6 +339,52 @@ class MovieController extends PageController
         $stmt->execute([':id' => $id]);
         $screenings = $stmt->fetchAll();
 
+        // Ensure at least 5 distinct days of screenings exist for this movie
+        $dates = [];
+        foreach ($screenings as $s) {
+            $d = substr($s['screening_datetime'], 0, 10);
+            $dates[$d] = true;
+        }
+        $distinctDays = count($dates);
+
+        if ($distinctDays < 5) {
+            // generate additional screenings on subsequent days at common times
+            $times = ['18:00:00', '19:30:00', '21:00:00', '16:00:00', '13:00:00'];
+            $added = 0;
+            $dayOffset = 0;
+            while ($distinctDays + $added < 5 && $dayOffset < 30) {
+                $dayOffset++;
+                $candidateDate = date('Y-m-d', strtotime("+{$dayOffset} days"));
+                if (isset($dates[$candidateDate])) continue;
+                // pick a time
+                $time = $times[$added % count($times)];
+                $dt = $candidateDate . ' ' . $time;
+                // check if exists
+                $chk = $this->db->prepare('SELECT COUNT(*) FROM screenings WHERE movie_id = :mid AND screening_datetime = :dt');
+                $chk->execute([':mid' => $id, ':dt' => $dt]);
+                if ((int)$chk->fetchColumn() === 0) {
+                    // use hall_id from first screening or default 1
+                    $hallId = $screenings[0]['hall_id'] ?? 1;
+                    $price = $screenings[0]['price_per_ticket'] ?? 150.00;
+                    $ins = $this->db->prepare('INSERT INTO screenings (movie_id, hall_id, screening_datetime, price_per_ticket) VALUES (:mid, :hid, :dt, :price)');
+                    $ins->execute([':mid' => $id, ':hid' => $hallId, ':dt' => $dt, ':price' => $price]);
+                    $added++;
+                }
+            }
+
+            // reload screenings
+            $stmt = $this->db->prepare(
+                "SELECT s.*, h.name as hall_name
+                 FROM screenings s
+                 JOIN halls h ON s.hall_id = h.id
+                 WHERE s.movie_id = :id
+                 AND s.screening_datetime > datetime('now')
+                 ORDER BY s.screening_datetime"
+            );
+            $stmt->execute([':id' => $id]);
+            $screenings = $stmt->fetchAll();
+        }
+
         $this->render('movie/detail', [
             'movie' => $movie,
             'comments' => $comments,
@@ -443,7 +520,7 @@ class MovieController extends PageController
             return;
         }
 
-        $screeningId = (int)$this->request->post('screening_id', 0);
+        $screeningId = (int)($this->request->post('screening_id', $this->request->get('screening_id', 0)));
 
         // Get screening info
         $stmt = $this->db->prepare(
@@ -501,7 +578,8 @@ class MovieController extends PageController
                 }
 
                 if (empty($errors)) {
-                    // Create tickets
+                    // Create tickets and remember ticket numbers
+                    $created = [];
                     foreach ($seatIds as $seatId) {
                         $ticketNumber = 'TKT-' . date('YmdHis') . '-' . rand(1000, 9999);
                         $stmt = $this->db->prepare(
@@ -515,10 +593,28 @@ class MovieController extends PageController
                             ':ticket' => $ticketNumber,
                             ':price' => $screening['price_per_ticket'],
                         ]);
+                        $created[] = $ticketNumber;
                     }
 
-                    $_SESSION['flash_success'] = 'Квитки успішно куплені! Кількість: ' . count($seatIds);
-                    $this->redirect('movie/detail&id=' . $screening['movie_id']);
+                    // Fetch created tickets to show receipt
+                    $in = implode(',', array_fill(0, count($created), '?'));
+                    $q = $this->db->prepare("SELECT t.*, hs.row_num, hs.seat_num, s.screening_datetime, m.title
+                                              FROM tickets t
+                                              JOIN hall_seats hs ON t.seat_id = hs.id
+                                              JOIN screenings s ON t.screening_id = s.id
+                                              JOIN movies m ON s.movie_id = m.id
+                                              WHERE t.ticket_number IN ($in)");
+                    $q->execute($created);
+                    $tickets = $q->fetchAll();
+
+                    $total = 0;
+                    foreach ($tickets as $t) $total += $t['price'];
+
+                    $this->render('movie/receipt', [
+                        'tickets' => $tickets,
+                        'total' => $total,
+                        'screening' => $screening,
+                    ], 'Чек покупки');
                     return;
                 }
             }
@@ -602,6 +698,107 @@ class MovieController extends PageController
             'errors' => $errors,
             'old' => $old,
         ], 'Додати сеанс');
+    }
+
+    // ===== API: DETAIL FOR MODAL =====
+    public function action_api_detail(): void
+    {
+        $id = (int)$this->request->get('id', 0);
+        if ($id <= 0) {
+            header('HTTP/1.1 400 Bad Request');
+            echo 'Invalid id';
+            exit;
+        }
+
+        $stmt = $this->db->prepare('SELECT * FROM movies WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+        $movie = $stmt->fetch();
+
+        if (!$movie) {
+            header('HTTP/1.1 404 Not Found');
+            echo 'Not found';
+            exit;
+        }
+
+        // Get upcoming screenings
+        $stmt = $this->db->prepare(
+            "SELECT s.*, h.name as hall_name FROM screenings s JOIN halls h ON s.hall_id = h.id WHERE s.movie_id = :id AND s.screening_datetime > datetime('now') ORDER BY s.screening_datetime"
+        );
+        $stmt->execute([':id' => $id]);
+        $screenings = $stmt->fetchAll();
+
+        // Get comments (latest 10)
+        $stmt = $this->db->prepare(
+            "SELECT mc.*, u.first_name, u.last_name FROM movie_comments mc JOIN users u ON mc.user_id = u.id WHERE mc.movie_id = :id ORDER BY mc.created_at DESC LIMIT 10"
+        );
+        $stmt->execute([':id' => $id]);
+        $comments = $stmt->fetchAll();
+
+        // Get reactions counts
+        $stmt = $this->db->prepare(
+            "SELECT reaction_type, COUNT(*) as count FROM movie_reactions WHERE movie_id = :id GROUP BY reaction_type"
+        );
+        $stmt->execute([':id' => $id]);
+        $reactions = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+        $this->render('movie/detail_partial', [
+            'movie' => $movie,
+            'screenings' => $screenings,
+            'comments' => $comments,
+            'reactions' => $reactions,
+        ]);
+        exit;
+    }
+
+    // ===== MY TICKETS =====
+    public function action_my_tickets(): void
+    {
+        if (!isset($_SESSION['user_id'])) {
+            $this->redirect('auth/login');
+            return;
+        }
+
+        $stmt = $this->db->prepare(
+            "SELECT t.*, m.title, hs.row_num, hs.seat_num, s.screening_datetime
+             FROM tickets t
+             JOIN screenings s ON t.screening_id = s.id
+             JOIN movies m ON s.movie_id = m.id
+             JOIN hall_seats hs ON t.seat_id = hs.id
+             WHERE t.user_id = :uid
+             ORDER BY t.purchase_datetime DESC"
+        );
+        $stmt->execute([':uid' => $_SESSION['user_id']]);
+        $tickets = $stmt->fetchAll();
+
+        $this->render('movie/my_tickets', [
+            'tickets' => $tickets,
+        ], 'Мої квитки');
+    }
+
+    // ===== CANCEL TICKET =====
+    public function action_cancel_ticket(): void
+    {
+        if (!isset($_SESSION['user_id'])) {
+            $this->redirect('auth/login');
+            return;
+        }
+
+        if ($this->request->isPost()) {
+            $ticketId = (int)$this->request->post('ticket_id', 0);
+            if ($ticketId > 0) {
+                // Only allow owner to cancel
+                $stmt = $this->db->prepare('SELECT user_id FROM tickets WHERE id = :id');
+                $stmt->execute([':id' => $ticketId]);
+                $owner = $stmt->fetchColumn();
+                if ($owner && (int)$owner === (int)$_SESSION['user_id']) {
+                    $stmt = $this->db->prepare('UPDATE tickets SET booking_status = :status WHERE id = :id');
+                    $stmt->execute([':status' => 'cancelled', ':id' => $ticketId]);
+                    $_SESSION['flash_success'] = 'Квиток скасовано.';
+                }
+            }
+        }
+
+        $this->redirect('movie/my_tickets');
     }
 
     private function isAdmin(): bool

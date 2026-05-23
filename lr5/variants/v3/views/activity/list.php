@@ -83,13 +83,14 @@ $userVotes = $userVotes ?? [];
 }
 
 .activity-card {
-    background: white;
+    background: inherit;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     transition: transform 0.3s, box-shadow 0.3s;
     display: flex;
     flex-direction: column;
+    color: inherit;
 }
 
 .activity-card:hover {
@@ -132,11 +133,11 @@ $userVotes = $userVotes ?? [];
 .activity-content h3 {
     margin: 0 0 10px 0;
     font-size: 18px;
-    color: #333;
+    color: inherit;
 }
 
 .description {
-    color: #666;
+    color: inherit;
     font-size: 13px;
     line-height: 1.4;
     margin-bottom: 10px;
@@ -145,7 +146,7 @@ $userVotes = $userVotes ?? [];
 .activity-type {
     display: inline-block;
     padding: 4px 8px;
-    background: #e9ecef;
+    background: rgba(255,255,255,0.04);
     border-radius: 4px;
     font-size: 12px;
     font-weight: 500;
@@ -153,7 +154,7 @@ $userVotes = $userVotes ?? [];
 }
 
 .activity-stats {
-    background: #f9f9f9;
+    background: rgba(255,255,255,0.03);
     padding: 10px;
     border-radius: 4px;
     margin-bottom: 15px;
@@ -163,12 +164,12 @@ $userVotes = $userVotes ?? [];
 .activity-stats p {
     margin: 5px 0;
     font-size: 13px;
-    color: #666;
+    color: inherit;
 }
 
 .vote-count {
     font-weight: 600;
-    color: #333 !important;
+    color: inherit;
 }
 
 .vote-form {
@@ -178,8 +179,8 @@ $userVotes = $userVotes ?? [];
 .btn-vote {
     width: 100%;
     padding: 10px;
-    background: #f0f0f0;
-    border: 2px solid #ddd;
+    background: inherit;
+    border: 2px solid rgba(255,255,255,0.06);
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
@@ -188,15 +189,14 @@ $userVotes = $userVotes ?? [];
 }
 
 .btn-vote:hover {
-    background: #ffe0e0;
-    border-color: #ff6b6b;
-    color: #c92a2a;
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.08);
 }
 
 .btn-vote.voted {
-    background: #ffe0e0;
-    border-color: #ff6b6b;
-    color: #c92a2a;
+    background: rgba(255,215,0,0.06);
+    border-color: rgba(255,215,0,0.15);
+    color: inherit;
 }
 
 .text-muted {
@@ -209,8 +209,8 @@ $userVotes = $userVotes ?? [];
     padding: 10px 20px;
     border-radius: 4px;
     text-decoration: none;
-    border: 1px solid #ddd;
-    background: white;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: inherit;
     cursor: pointer;
 }
 

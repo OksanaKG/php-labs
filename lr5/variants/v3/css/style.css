@@ -398,6 +398,103 @@ body.color-gold-screen {
     background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
 }
 
+/* Contrast and component fixes to avoid unreadable white-on-light text */
+.screening-info, .hall-layout, .total-section, .ticket-purchase-container, .movie-card, .movie-info, .movie-poster, .poster-placeholder, .movie-title, .movie-director, .movie-year, .movie-genre, .movie-stats, .legend-item, .seats-row, .screen-label, .btn-primary, .btn, .card {
+    color: inherit;
+}
+
+body.bg-dark-theme .screening-info,
+body.bg-dark-theme .hall-layout,
+body.bg-dark-theme .total-section,
+body.bg-dark-theme .movie-card {
+    background: rgba(255,255,255,0.03);
+    color: #f5f5f5;
+    border-color: rgba(255,255,255,0.04);
+}
+
+body.bg-light-theme .screening-info,
+body.bg-light-theme .hall-layout,
+body.bg-light-theme .total-section,
+body.bg-light-theme .movie-card {
+    background: #ffffff;
+    color: #1a1a2e;
+    border-color: #e6e6e6;
+}
+
+/* Ensure elements that used explicit white text switch to dark text on light theme */
+body.bg-light-theme .screen-label,
+body.bg-light-theme .poster-placeholder,
+body.bg-light-theme .poster-placeholder .icon,
+body.bg-light-theme .movie-poster {
+    color: #1a1a2e !important;
+}
+
+/* Seats layout: keep rows horizontal and allow horizontal scroll when many seats */
+.seats-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+    overflow-x: hidden;
+}
+
+.seats-row {
+    display: grid;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 0;
+    grid-auto-flow: column;
+}
+
+.seats-row::-webkit-scrollbar { height: 8px; }
+.seats-row::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
+
+.seat { width: 44px; height: 44px; padding: 6px; box-sizing: border-box; display:inline-flex;align-items:center;justify-content:center;border-radius:6px; background:#e9ecef;border:1px solid #ccc;font-weight:600; }
+.seat.placeholder { visibility: hidden; background: transparent; border: none; }
+
+/* Wider ticket/summary column on desktop */
+.ticket-purchase-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+@media (min-width: 900px) {
+    .ticket-purchase-container {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 20px;
+        align-items: start;
+    }
+    .ticket-purchase-container .total-section { grid-column: 2; }
+    .ticket-purchase-container .hall-layout { grid-column: 1; }
+    .ticket-purchase-container .screening-info { grid-column: 1; }
+}
+
+/* Make ticket table cells a bit wider for readability */
+.table td:first-child, .table th:first-child { min-width: 160px; }
+
+
+/* Improve select/option visibility across themes */
+select, .form__select, input[type="date"], input[type="time"] {
+    background: #fff;
+    color: #111;
+    border: 1px solid #ccc;
+    padding: 8px 10px;
+    border-radius: 4px;
+    appearance: none;
+}
+
+select:focus, .form__select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.12);
+}
+
+select option {
+    background: #fff;
+    color: #111;
+}
+
 body.color-gold-screen.bg-light-theme {
     color: #1a1a2e;
 }
@@ -943,6 +1040,23 @@ code {
     align-items: center;
 }
 
+/* Theme toggle in header: keep transparent background and no border */
+.header__theme-toggle {
+    background: transparent;
+    border: none;
+    padding: 6px;
+    font-size: 18px;
+    cursor: pointer;
+    color: inherit;
+}
+.header__theme-toggle:hover { transform: translateY(-1px); }
+
+/* When a modal is open, hide auth links and greeting to avoid clutter */
+body.modal-open .header__auth,
+body.modal-open .header__greeting {
+    display: none !important;
+}
+
 .header__auth-link {
     color: #cbd5e1;
     padding: 6px 12px;
@@ -1302,6 +1416,95 @@ h3 {
     border-color: #ffd700;
     box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
 }
+
+/* Additional theme-aware small panels and seat visuals */
+.reaction-btn {
+    background: rgba(255,255,255,0.03);
+    color: inherit;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+.reaction-btn:hover { background: rgba(255,255,255,0.06); }
+
+.screening-card,
+.poll-option,
+.polls-section {
+    background: rgba(255,255,255,0.03);
+    color: inherit;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+body.bg-light-theme .reaction-btn,
+body.bg-light-theme .screening-card,
+body.bg-light-theme .poll-option,
+body.bg-light-theme .polls-section {
+    background: #ffffff;
+    color: #1a1a2e;
+    border: 1px solid #e6e6e6;
+}
+
+.seat.booked { background: #666 !important; color: #fff; border-color: #555 !important; }
+
+/* Center rows visually similar to mockup */
+.seats-row { justify-content: center; }
+
+/* Screening date selector styles to match mockup */
+#screening_date {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(0,0,0,0.35);
+    color: #ffd700;
+    font-weight: 600;
+}
+
+body.bg-light-theme #screening_date {
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+#times_list .screening-card {
+    margin-top: 10px;
+}
+
+/* Ensure muted/label texts are readable in dark theme */
+body.bg-dark-theme .text-muted,
+body.bg-dark-theme .movie-director,
+body.bg-dark-theme .movie-year,
+body.bg-dark-theme .movie-genre,
+body.bg-dark-theme .form-control,
+body.bg-dark-theme .row-label,
+body.bg-dark-theme .stat-item,
+body.bg-dark-theme .comment-date,
+body.bg-dark-theme .comment-rating {
+    color: rgba(255,255,255,0.75);
+}
+
+/* Light theme overrides to ensure dark text */
+body.bg-light-theme .text-muted,
+body.bg-light-theme .movie-director,
+body.bg-light-theme .movie-year,
+body.bg-light-theme .movie-genre,
+body.bg-light-theme .form-control,
+body.bg-light-theme .row-label,
+body.bg-light-theme .stat-item,
+body.bg-light-theme .comment-date,
+body.bg-light-theme .comment-rating {
+    color: #333;
+}
+
+/* Ensure form controls are readable in light theme */
+body.bg-light-theme .form-control,
+body.bg-light-theme .form__input,
+body.bg-light-theme .form__select,
+body.bg-light-theme .form__textarea {
+    background: #fff;
+    color: #1a1a2e;
+    border-color: #ddd;
+}
+
+
 .color-swatch--active {
     border-color: #ffd700;
     background: rgba(255, 215, 0, 0.1);

@@ -16,7 +16,7 @@ $old = $old ?? [];
     </div>
 <?php endif; ?>
 
-<form method="POST" action="index.php?route=movie/create" class="form">
+<form method="POST" action="index.php?route=movie/create" class="form" enctype="multipart/form-data">
     <div class="form__group <?= isset($errors['title']) ? 'form__group--error' : '' ?>">
         <label for="m_title" class="form__label">Назва фільму <span class="required">*</span></label>
         <input type="text" id="m_title" name="title" class="form__input"
@@ -70,6 +70,22 @@ $old = $old ?? [];
         <label for="m_description" class="form__label">Опис фільму</label>
         <textarea id="m_description" name="description" class="form__input" rows="4"
                   placeholder="Коротко опишіть сюжет фільму..."><?= htmlspecialchars($old['description'] ?? '') ?></textarea>
+    </div>
+
+    <div class="form__group">
+        <label for="m_age" class="form__label">Вікове обмеження</label>
+        <select id="m_age" name="age_limit" class="form__input">
+            <option value="0">Без обмежень</option>
+            <option value="6">6+</option>
+            <option value="12">12+</option>
+            <option value="16">16+</option>
+            <option value="18">18+</option>
+        </select>
+    </div>
+
+    <div class="form__group">
+        <label for="m_poster" class="form__label">Обкладинка (JPEG/PNG)</label>
+        <input type="file" id="m_poster" name="poster_image" accept="image/*" class="form__input">
     </div>
 
     <div class="form__actions">

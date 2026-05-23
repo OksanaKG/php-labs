@@ -6,15 +6,23 @@ $errors = $errors ?? [];
 ?>
 
 <h1>Купити квитки: <?= htmlspecialchars($screening['title'] ?? '') ?></h1>
-
 <div class="ticket-purchase-container">
-    <div class="screening-info">
-        <h3>Інформація про сеанс</h3>
-        <p><strong>Фільм:</strong> <?= htmlspecialchars($screening['title'] ?? '') ?></p>
-        <p><strong>Зала:</strong> <?= htmlspecialchars($screening['hall_name'] ?? '') ?></p>
-        <p><strong>Час:</strong> <?= htmlspecialchars($screening['screening_datetime'] ?? '') ?></p>
-        <p><strong>Ціна за квиток:</strong> <span style="font-size: 18px; font-weight: bold; color: #28a745;">₴<?= number_format($screening['price_per_ticket'] ?? 0, 2) ?></span></p>
+    <div class="poster-column" style="flex:0 0 220px;">
+        <?php $poster = $screening['poster_image'] ?? ''; ?>
+        <?php if (!empty($poster)): ?>
+            <img src="<?= htmlspecialchars($poster) ?>" alt="poster" style="width:100%;height:auto;border-radius:8px;object-fit:cover;">
+        <?php else: ?>
+            <div style="width:100%;height:320px;border-radius:8px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px;">🎬</div>
+        <?php endif; ?>
     </div>
+    <div class="purchase-column" style="flex:1;display:flex;flex-direction:column;gap:18px;">
+        <div class="screening-info">
+            <h3>Інформація про сеанс</h3>
+            <p><strong>Фільм:</strong> <?= htmlspecialchars($screening['title'] ?? '') ?></p>
+            <p><strong>Зала:</strong> <?= htmlspecialchars($screening['hall_name'] ?? '') ?></p>
+            <p><strong>Час:</strong> <?= htmlspecialchars($screening['screening_datetime'] ?? '') ?></p>
+            <p><strong>Ціна за квиток:</strong> <span style="font-size: 18px; font-weight: bold; color: #28a745;">₴<?= number_format($screening['price_per_ticket'] ?? 0, 2) ?></span></p>
+        </div>
 
     <?php if (!empty($errors)): ?>
         <div class="alert alert-danger">
@@ -34,38 +42,49 @@ $errors = $errors ?? [];
             </div>
 
             <div class="seats-grid" id="seatsContainer">
-                <?php 
-                $currentRow = 0;
-                $rowHtml = '<div class="seats-row">';
-                
-                foreach ($seats as $seat): 
-                    if ($seat['row_num'] != $currentRow):
-                        if ($currentRow > 0):
-                            $rowHtml .= '</div>';
-                            echo $rowHtml;
-                        endif;
-                        $rowHtml = '<div class="seats-row"><div class="row-label">Ряд ' . $seat['row_num'] . '</div>';
-                        $currentRow = $seat['row_num'];
-                    endif;
-                    
-                    $isBooked = (int)$seat['is_booked'] > 0;
-                    $isSelected = in_array($seat['id'], array_values((array)$selectedSeats));
-                    $seatClass = 'seat';
-                    if ($isBooked) {
-                        $seatClass .= ' booked';
-                    }
-                    if ($isSelected) {
-                        $seatClass .= ' selected';
-                    }
+                <?php
+                // Group seats by row
+                $rows = [];
+                foreach ($seats as $s) {
+                    $rows[$s['row_num']][] = $s;
+                }
+                ksort($rows, SORT_NUMERIC);
+                $maxSeats = 0;
+                foreach ($rows as $r) { $maxSeats = max($maxSeats, count($r)); }
+
+                foreach ($rows as $rowNum => $rowSeats):
+                    $count = count($rowSeats);
+                    $left = (int)floor(($maxSeats - $count) / 2);
                 ?>
-                    <label class="<?= $seatClass ?>">
-                        <input type="checkbox" name="seats[]" value="<?= (int)$seat['id'] ?>" 
-                               <?= $isBooked ? 'disabled' : '' ?>
-                               <?= $isSelected ? 'checked' : '' ?>>
-                        <span class="seat-number"><?= (int)$seat['seat_num'] ?></span>
-                    </label>
+                    <div class="row-wrap" style="display:flex;align-items:center;gap:12px;">
+                        <div class="row-label">Ряд <?= (int)$rowNum ?></div>
+                        <div class="seats-row" style="grid-template-columns: repeat(<?= $maxSeats ?>, 44px);">
+                            <?php for ($i=0;$i<$left;$i++): ?>
+                                <div class="seat placeholder" aria-hidden="true"></div>
+                            <?php endfor; ?>
+
+                            <?php foreach ($rowSeats as $seat):
+                                $isBooked = (int)$seat['is_booked'] > 0;
+                                $isSelected = in_array($seat['id'], array_values((array)$selectedSeats));
+                                $seatClass = 'seat';
+                                if ($isBooked) $seatClass .= ' booked';
+                                if ($isSelected) $seatClass .= ' selected';
+                            ?>
+                                <label class="<?= $seatClass ?>">
+                                    <input type="checkbox" name="seats[]" value="<?= (int)$seat['id'] ?>" 
+                                           <?= $isBooked ? 'disabled' : '' ?>
+                                           <?= $isSelected ? 'checked' : '' ?>>
+                                    <span class="seat-number"><?= (int)$seat['seat_num'] ?></span>
+                                </label>
+                            <?php endforeach; ?>
+
+                            <?php for ($i=0;$i<($maxSeats - $left - $count);$i++): ?>
+                                <div class="seat placeholder" aria-hidden="true"></div>
+                            <?php endfor; ?>
+                        </div>
+                    </div>
                 <?php endforeach; ?>
-                </div>
+            </div>
             </div>
 
             <div class="legend">
@@ -87,6 +106,7 @@ $errors = $errors ?? [];
         <div class="total-section">
             <h3>Загалом</h3>
             <p>Вибрано місць: <span id="seatCount">0</span></p>
+            <p>Список місць: <span id="selectedSeats">—</span></p>
             <p>Сума: <span id="totalPrice" style="font-size: 20px; font-weight: bold; color: #28a745;">₴0.00</span></p>
             <button type="submit" class="btn btn-success btn-large">Завершити покупку</button>
             <a href="index.php?route=movie/detail&id=<?= (int)$screening['movie_id'] ?>" class="btn">Скасувати</a>
@@ -96,15 +116,17 @@ $errors = $errors ?? [];
 
 <style>
 .ticket-purchase-container {
-    max-width: 1000px;
-    margin: 0 auto;
+    /* layout controlled by global css, fallback */
+    padding: 8px;
 }
 
 .screening-info {
-    background: #f9f9f9;
+    background: inherit;
     padding: 20px;
     border-radius: 8px;
-    margin-bottom: 30px;
+    margin-bottom: 18px;
+    color: inherit;
+    border: 1px solid #e6e6e6;
 }
 
 .screening-info p {
@@ -113,11 +135,12 @@ $errors = $errors ?? [];
 }
 
 .hall-layout {
-    background: white;
-    padding: 30px;
+    background: inherit;
+    padding: 20px;
     border-radius: 8px;
-    margin-bottom: 30px;
-    border: 1px solid #ddd;
+    margin-bottom: 18px;
+    border: 1px solid #e6e6e6;
+    color: inherit;
 }
 
 .screen {
@@ -137,19 +160,7 @@ $errors = $errors ?? [];
     letter-spacing: 2px;
 }
 
-.seats-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.seats-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: center;
-}
+.seats-grid { margin-bottom: 20px; }
 
 .row-label {
     min-width: 60px;
@@ -159,19 +170,9 @@ $errors = $errors ?? [];
     font-size: 13px;
 }
 
-.seat {
-    position: relative;
-    width: 30px;
-    height: 30px;
-    background: #e9ecef;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+.row-wrap { width: 100%; display:flex; align-items:center; gap:12px; }
+
+.seats-row { display: grid; gap:8px; align-items:center; justify-content:center; }
 
 .seat:hover:not(.booked) {
     background: #667eea;
@@ -184,11 +185,8 @@ $errors = $errors ?? [];
     display: none;
 }
 
-.seat-number {
-    font-size: 11px;
-    font-weight: 600;
-    color: inherit;
-}
+.seat-number { font-size: 12px; color: #1a1a2e; }
+body.bg-dark-theme .seat-number { color: #fff; }
 
 .seat.selected {
     background: #667eea;
@@ -198,19 +196,20 @@ $errors = $errors ?? [];
 }
 
 .seat.booked {
-    background: #ccc;
-    border-color: #999;
+    background: #666;
+    border-color: #555;
     cursor: not-allowed;
-    opacity: 0.5;
+    color: #fff;
+    opacity: 1;
 }
 
 .legend {
     display: flex;
-    gap: 30px;
+    gap: 18px;
     justify-content: center;
     flex-wrap: wrap;
-    padding-top: 20px;
-    border-top: 1px solid #ddd;
+    padding-top: 12px;
+    border-top: 1px solid #e6e6e6;
 }
 
 .legend-item {
@@ -246,6 +245,8 @@ $errors = $errors ?? [];
     padding: 20px;
     border-radius: 8px;
     text-align: center;
+    color: inherit;
+    border: 1px solid #e6e6e6;
 }
 
 .total-section h3 {
@@ -350,6 +351,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         seatCountSpan.textContent = count;
         totalPriceSpan.textContent = '₴' + total.toFixed(2);
+        const selectedNames = selected.map(cb => {
+            const label = cb.closest('label');
+            const num = label ? (label.querySelector('.seat-number') ? label.querySelector('.seat-number').textContent.trim() : cb.value) : cb.value;
+            // Try to read row from nearest .row-label sibling
+            const rowDiv = label ? label.parentElement.querySelector('.row-label') : null;
+            const row = rowDiv ? rowDiv.textContent.replace('Ряд','').trim() : '';
+            return (row ? ('Р' + row + '-') : '') + num;
+        });
+        document.getElementById('selectedSeats').textContent = selectedNames.length ? selectedNames.join(', ') : '—';
         submitBtn.disabled = count === 0;
     }
 
