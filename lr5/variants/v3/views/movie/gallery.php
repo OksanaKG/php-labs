@@ -169,7 +169,6 @@ $movies = $movies ?? [];
 <div id="movieModal" class="modal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:9999;">
     <div class="modal-content card" style="padding:20px;max-width:900px;width:95%;max-height:90%;overflow:auto;position:relative;">
         <div style="position:absolute;right:12px;top:12px;display:flex;gap:8px;align-items:center;">
-            <button id="modalThemeToggle" title="Toggle theme" style="border:none;background:transparent;color:inherit;font-size:18px;cursor:pointer">🌙</button>
             <button id="modalClose" style="border:none;background:transparent;color:inherit;padding:6px 10px;border-radius:4px;cursor:pointer">✕</button>
         </div>
         <div id="modalBody">Завантаження...</div>
@@ -181,24 +180,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('movieModal');
     const modalBody = document.getElementById('modalBody');
     const closeBtn = document.getElementById('modalClose');
-    const themeToggle = document.getElementById('modalThemeToggle');
-
-    // initialize theme toggle icon
-    function updateThemeIcon() {
-        if (document.body.classList.contains('bg-light-theme')) themeToggle.textContent = '🌙';
-        else themeToggle.textContent = '☀️';
-    }
-    updateThemeIcon();
-    themeToggle.addEventListener('click', function(){
-        if (document.body.classList.contains('bg-light-theme')) {
-            document.body.classList.remove('bg-light-theme');
-            document.body.classList.add('bg-dark-theme');
-        } else {
-            document.body.classList.remove('bg-dark-theme');
-            document.body.classList.add('bg-light-theme');
-        }
-        updateThemeIcon();
-    });
 
     function openModal(html) {
         modalBody.innerHTML = html;

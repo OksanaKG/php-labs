@@ -3,25 +3,29 @@ $screening = $screening ?? [];
 $seats = $seats ?? [];
 $selectedSeats = $selectedSeats ?? [];
 $errors = $errors ?? [];
+// poster image
+$poster = $screening['poster_image'] ?? '';
 ?>
 
 <h1>Купити квитки: <?= htmlspecialchars($screening['title'] ?? '') ?></h1>
+<form method="POST" action="index.php?route=movie/buy_ticket&screening_id=<?= (int)$screening['id'] ?>" id="ticketForm">
 <div class="ticket-purchase-container">
-    <div class="poster-column" style="flex:0 0 220px;">
-        <?php $poster = $screening['poster_image'] ?? ''; ?>
-        <?php if (!empty($poster)): ?>
-            <img src="<?= htmlspecialchars($poster) ?>" alt="poster" style="width:100%;height:auto;border-radius:8px;object-fit:cover;">
-        <?php else: ?>
-            <div style="width:100%;height:320px;border-radius:8px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px;">🎬</div>
-        <?php endif; ?>
-    </div>
     <div class="purchase-column" style="flex:1;display:flex;flex-direction:column;gap:18px;">
-        <div class="screening-info">
-            <h3>Інформація про сеанс</h3>
-            <p><strong>Фільм:</strong> <?= htmlspecialchars($screening['title'] ?? '') ?></p>
-            <p><strong>Зала:</strong> <?= htmlspecialchars($screening['hall_name'] ?? '') ?></p>
-            <p><strong>Час:</strong> <?= htmlspecialchars($screening['screening_datetime'] ?? '') ?></p>
-            <p><strong>Ціна за квиток:</strong> <span style="font-size: 18px; font-weight: bold; color: #28a745;">₴<?= number_format($screening['price_per_ticket'] ?? 0, 2) ?></span></p>
+        <div class="info-row" style="display:flex;gap:12px;align-items:flex-start;">
+            <div class="poster-left" style="flex:0 0 180px;">
+                <?php if (!empty($poster)): ?>
+                    <img src="<?= htmlspecialchars($poster) ?>" alt="poster" style="width:100%;height:auto;border-radius:8px;object-fit:cover;">
+                <?php else: ?>
+                    <div style="width:100%;height:260px;border-radius:8px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px;">🎬</div>
+                <?php endif; ?>
+            </div>
+            <div class="screening-info" style="flex:1;">
+                <h3>Інформація про сеанс</h3>
+                <p><strong>Фільм:</strong> <?= htmlspecialchars($screening['title'] ?? '') ?></p>
+                <p><strong>Зала:</strong> <?= htmlspecialchars($screening['hall_name'] ?? '') ?></p>
+                <p><strong>Час:</strong> <?= htmlspecialchars($screening['screening_datetime'] ?? '') ?></p>
+                <p><strong>Ціна за квиток:</strong> <span style="font-size: 18px; font-weight: bold; color: #28a745;">₴<?= number_format($screening['price_per_ticket'] ?? 0, 2) ?></span></p>
+            </div>
         </div>
 
     <?php if (!empty($errors)): ?>
@@ -34,7 +38,6 @@ $errors = $errors ?? [];
         </div>
     <?php endif; ?>
 
-    <form method="POST" action="index.php?route=movie/buy_ticket&screening_id=<?= (int)$screening['id'] ?>" id="ticketForm">
         <div class="hall-layout">
             <h3>Оберіть місця</h3>
             <div class="screen">
@@ -49,8 +52,7 @@ $errors = $errors ?? [];
                     $rows[$s['row_num']][] = $s;
                 }
                 ksort($rows, SORT_NUMERIC);
-                $maxSeats = 0;
-                foreach ($rows as $r) { $maxSeats = max($maxSeats, count($r)); }
+                $maxSeats = 14; // fixed 14 seats per row
 
                 foreach ($rows as $rowNum => $rowSeats):
                     $count = count($rowSeats);
@@ -103,6 +105,8 @@ $errors = $errors ?? [];
             </div>
         </div>
 
+    </div>
+    <div class="sidebar-column" style="flex:0 0 380px;">
         <div class="total-section">
             <h3>Загалом</h3>
             <p>Вибрано місць: <span id="seatCount">0</span></p>
@@ -111,8 +115,9 @@ $errors = $errors ?? [];
             <button type="submit" class="btn btn-success btn-large">Завершити покупку</button>
             <a href="index.php?route=movie/detail&id=<?= (int)$screening['movie_id'] ?>" class="btn">Скасувати</a>
         </div>
-    </form>
+    </div>
 </div>
+</form>
 
 <style>
 .ticket-purchase-container {
@@ -126,7 +131,7 @@ $errors = $errors ?? [];
     border-radius: 8px;
     margin-bottom: 18px;
     color: inherit;
-    border: 1px solid #e6e6e6;
+    border: 1px solid rgba(230, 230, 230, 0.3);
 }
 
 .screening-info p {
@@ -139,7 +144,7 @@ $errors = $errors ?? [];
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 18px;
-    border: 1px solid #e6e6e6;
+    border: 1px solid rgba(230, 230, 230, 0.3);
     color: inherit;
 }
 
@@ -185,8 +190,8 @@ $errors = $errors ?? [];
     display: none;
 }
 
-.seat-number { font-size: 12px; color: #1a1a2e; }
-body.bg-dark-theme .seat-number { color: #fff; }
+.seat-number { font-size: 12px; color: var(--seat-text); font-weight:700; text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
+body.bg-light-theme .seat-number { text-shadow: none; }
 
 .seat.selected {
     background: #667eea;
@@ -209,7 +214,7 @@ body.bg-dark-theme .seat-number { color: #fff; }
     justify-content: center;
     flex-wrap: wrap;
     padding-top: 12px;
-    border-top: 1px solid #e6e6e6;
+    border-top: 1px solid rgba(230, 230, 230, 0.3);
 }
 
 .legend-item {
@@ -241,12 +246,12 @@ body.bg-dark-theme .seat-number { color: #fff; }
 }
 
 .total-section {
-    background: #f9f9f9;
+    background: inherit;
     padding: 20px;
     border-radius: 8px;
     text-align: center;
     color: inherit;
-    border: 1px solid #e6e6e6;
+    border: 1px solid rgba(230, 230, 230, 0.3);
 }
 
 .total-section h3 {
@@ -363,8 +368,14 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.disabled = count === 0;
     }
 
+    // toggle selected class and update totals on change
     checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateTotals);
+        const label = checkbox.closest('label');
+        if (checkbox.checked) label && label.classList.add('selected');
+        checkbox.addEventListener('change', function() {
+            if (checkbox.checked) label && label.classList.add('selected'); else label && label.classList.remove('selected');
+            updateTotals();
+        });
     });
 
     updateTotals();

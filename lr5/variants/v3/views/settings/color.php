@@ -41,5 +41,3 @@ $colorMap = [
         <button type="submit" class="btn">Зберегти колір</button>
     </div>
 </form>
-
-<p class="text-muted text-muted--mt">Модуль успадковано з ЛР4. Також доступне <a href="index.php?route=settings/greeting">привітання через Cookie</a>.</p>

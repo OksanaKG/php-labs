@@ -8,12 +8,15 @@ class MovieController extends PageController
     {
         parent::__construct();
         $this->db = Database::getInstance();
+        // ensure sample movies exist for demo
+        $this->ensureSampleMovies();
     }
 
     public function action_list(): void
     {
         $sort = $_GET['sort'] ?? 'id';
         $order = $_GET['order'] ?? 'asc';
+        $filterGenre = trim($_GET['genre'] ?? '');
         
         $allowedSorts = ['id', 'title', 'director', 'genre', 'year', 'duration_min'];
         if (!in_array($sort, $allowedSorts)) {
@@ -23,14 +26,26 @@ class MovieController extends PageController
             $order = 'asc';
         }
         
-        $stmt = $this->db->prepare("SELECT * FROM movies ORDER BY {$sort} {$order}");
-        $stmt->execute();
+        if ($filterGenre !== '') {
+            $stmt = $this->db->prepare("SELECT * FROM movies WHERE genre = :genre ORDER BY {$sort} {$order}");
+            $stmt->execute([':genre' => $filterGenre]);
+        } else {
+            $stmt = $this->db->prepare("SELECT * FROM movies ORDER BY {$sort} {$order}");
+            $stmt->execute();
+        }
         $movies = $stmt->fetchAll();
+
+        // distinct genres for dropdown
+        $gstmt = $this->db->prepare('SELECT DISTINCT genre FROM movies WHERE genre IS NOT NULL AND genre != "" ORDER BY genre');
+        $gstmt->execute();
+        $genres = array_map(function($r){ return $r['genre']; }, $gstmt->fetchAll());
 
         $this->render('movie/list', [
             'movies' => $movies,
             'currentSort' => $sort,
             'currentOrder' => $order,
+            'genres' => $genres,
+            'currentGenre' => $filterGenre,
         ], 'Фільми');
     }
 
@@ -211,6 +226,7 @@ class MovieController extends PageController
     // ===== GALLERY VIEW =====
     public function action_gallery(): void
     {
+        $this->ensureSampleMovies();
         $stmt = $this->db->prepare(
             "SELECT m.*, COUNT(DISTINCT mc.id) as comments_count, 
                     COUNT(DISTINCT mr.id) as reactions_count
@@ -226,6 +242,62 @@ class MovieController extends PageController
         $this->render('movie/gallery', [
             'movies' => $movies,
         ], 'Галерея фільмів');
+    }
+
+    private function ensureSampleMovies(): void
+    {
+        // Insert sample movies if they don't already exist (idempotent)
+        $samples = [
+            ['title'=>'Диявол носить Prada','director'=>'David Frankel','genre'=>'Drama','year'=>2006,'duration'=>109],
+            ['title'=>'Як приборкати дракона','director'=>'Dean DeBlois','genre'=>'Animation','year'=>2010,'duration'=>98],
+            ['title'=>'Гаррі Поттер і філософський камінь','director'=>'Chris Columbus','genre'=>'Fantasy','year'=>2001,'duration'=>152],
+            ['title'=>'Чорна Вдова','director'=>'Cate Shortland','genre'=>'Action','year'=>2021,'duration'=>134],
+            ['title'=>'Людина-павук: Повернення додому','director'=>'Jon Watts','genre'=>'Action','year'=>2017,'duration'=>133],
+            // Marvel examples
+            ['title'=>'Залізна Людина','director'=>'Jon Favreau','genre'=>'Action','year'=>2008,'duration'=>126],
+            ['title'=>'Тор','director'=>'Kenneth Branagh','genre'=>'Action','year'=>2011,'duration'=>115],
+            ['title'=>'Капітан Америка: Перший месник','director'=>'Joe Johnston','genre'=>'Action','year'=>2011,'duration'=>124],
+            ['title'=>'Месники','director'=>'Joss Whedon','genre'=>'Action','year'=>2012,'duration'=>143],
+            ['title'=>'Людина-павук: Далеко від дому','director'=>'Jon Watts','genre'=>'Action','year'=>2019,'duration'=>129],
+        ];
+
+        $ins = $this->db->prepare('INSERT INTO movies (title,director,genre,year,duration_min,poster_image,description,age_limit) VALUES (:title,:director,:genre,:year,:duration,:poster,:desc,:age)');
+        // prepare screening insert
+        $insS = $this->db->prepare('INSERT INTO screenings (movie_id,hall_id,screening_datetime,price_per_ticket) VALUES (:mid,:hid,:dt,:price)');
+        foreach ($samples as $s) {
+            // check if movie title exists
+            $chk = $this->db->prepare('SELECT id FROM movies WHERE title = :title LIMIT 1');
+            $chk->execute([':title' => $s['title']]);
+            $existing = $chk->fetchColumn();
+            if ($existing) {
+                // ensure there are some screenings for this movie
+                $sc = $this->db->prepare('SELECT COUNT(*) FROM screenings WHERE movie_id = :mid');
+                $sc->execute([':mid' => (int)$existing]);
+                if ((int)$sc->fetchColumn() === 0) {
+                    $times = ['13:00:00','16:30:00','19:00:00'];
+                    for ($d=0;$d<3;$d++) {
+                        foreach ($times as $t) {
+                            $dt = date('Y-m-d', strtotime("+{$d} days")) . ' ' . $t;
+                            $insS->execute([':mid'=>(int)$existing, ':hid'=>1, ':dt'=>$dt, ':price'=>150.00]);
+                        }
+                    }
+                }
+                continue;
+            }
+
+            $ins->execute([
+                ':title'=>$s['title'], ':director'=>$s['director'], ':genre'=>$s['genre'], ':year'=>$s['year'], ':duration'=>$s['duration'], ':poster'=>'', ':desc'=>'', ':age'=>0
+            ]);
+            $mid = (int)$this->db->lastInsertId();
+            // add screenings for next 3 days at multiple times
+            $times = ['13:00:00','16:30:00','19:00:00'];
+            for ($d=0;$d<3;$d++) {
+                foreach ($times as $t) {
+                    $dt = date('Y-m-d', strtotime("+{$d} days")) . ' ' . $t;
+                    $insS->execute([':mid'=>$mid, ':hid'=>1, ':dt'=>$dt, ':price'=>150.00]);
+                }
+            }
+        }
     }
 
     // ===== MOVIE DETAILS =====
@@ -524,7 +596,7 @@ class MovieController extends PageController
 
         // Get screening info
         $stmt = $this->db->prepare(
-            "SELECT s.*, m.title, h.name as hall_name
+            "SELECT s.*, m.title, m.poster_image, h.name as hall_name
              FROM screenings s
              JOIN movies m ON s.movie_id = m.id
              JOIN halls h ON s.hall_id = h.id
@@ -598,7 +670,7 @@ class MovieController extends PageController
 
                     // Fetch created tickets to show receipt
                     $in = implode(',', array_fill(0, count($created), '?'));
-                    $q = $this->db->prepare("SELECT t.*, hs.row_num, hs.seat_num, s.screening_datetime, m.title
+                    $q = $this->db->prepare("SELECT t.*, hs.row_num, hs.seat_num, s.screening_datetime, m.title, m.poster_image
                                               FROM tickets t
                                               JOIN hall_seats hs ON t.seat_id = hs.id
                                               JOIN screenings s ON t.screening_id = s.id
@@ -759,7 +831,7 @@ class MovieController extends PageController
         }
 
         $stmt = $this->db->prepare(
-            "SELECT t.*, m.title, hs.row_num, hs.seat_num, s.screening_datetime
+            "SELECT t.*, m.title, m.poster_image, hs.row_num, hs.seat_num, s.screening_datetime
              FROM tickets t
              JOIN screenings s ON t.screening_id = s.id
              JOIN movies m ON s.movie_id = m.id

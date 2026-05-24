@@ -1,62 +1,47 @@
-<?php
-$message = $message ?? '';
-$error = $error ?? '';
-$folders = $folders ?? [];
-?>
-
-<h1>Створення каталогу</h1>
-<p>Введіть логін — буде створено папку <code>data/users/{логін}/</code> з підпапками <code>video</code>, <code>music</code>, <code>photo</code>.</p>
-
-<?php if ($message !== ''): ?>
-    <div class="alert alert--success"><?= htmlspecialchars($message) ?></div>
+<h1>Товари</h1>
+<?php $products = $products ?? []; ?>
+<?php if (!empty($_SESSION['user_id']) && $_SESSION['user_id'] === 1): ?>
+    <h3>Додати товар (адмін)</h3>
+    <form method="POST" action="index.php?route=folder/upload_product" enctype="multipart/form-data" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <input type="text" name="name" placeholder="Назва" required style="padding:8px;border-radius:6px;border:1px solid #ccc;">
+        <input type="text" name="price" placeholder="Ціна" required style="padding:8px;border-radius:6px;border:1px solid #ccc;width:100px;">
+        <input type="text" name="description" placeholder="Опис" style="padding:8px;border-radius:6px;border:1px solid #ccc;">
+        <input type="file" name="product_image" accept="image/*">
+        <button class="btn" type="submit">Додати товар</button>
+    </form>
 <?php endif; ?>
 
-<?php if ($error !== ''): ?>
-    <div class="alert alert--error"><?= htmlspecialchars($error) ?></div>
-<?php endif; ?>
-
-<form method="POST" action="index.php?route=folder/create" class="form">
-    <div class="form__row">
-        <div class="form__group">
-            <label for="folder_login" class="form__label">Логін <span class="required">*</span></label>
-            <input type="text" id="folder_login" name="login" class="form__input"
-                   value="<?= htmlspecialchars($_POST['login'] ?? '') ?>"
-                   placeholder="Латинські літери, цифри, _">
+<div class="products" style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;">
+    <?php if (empty($products)): ?>
+        <div class="card" style="padding:18px;border-radius:8px;min-width:220px;">
+            <h3>Товари відсутні</h3>
+            <p class="text-muted">Поки що товарів немає. Ви можете додати новий товар у розділі "Додати товар" (адмін).</p>
+            <?php if (!empty($_SESSION['user_id']) && $_SESSION['user_id'] === 1): ?>
+                <a href="#add" class="btn">Додати перший товар</a>
+            <?php endif; ?>
         </div>
-        <div class="form__group">
-            <label for="folder_password" class="form__label">Пароль <span class="required">*</span></label>
-            <input type="password" id="folder_password" name="password" class="form__input"
-                   placeholder="Для видалення папки">
-        </div>
-    </div>
+    <?php else: ?>
+        <?php foreach ($products as $p): ?>
+            <div class="card product-card" style="padding:12px;border-radius:8px;min-width:180px;cursor:pointer;" data-id="<?= (int)$p['id'] ?>">
+                <?php if (!empty($p['image'])): ?>
+                    <img src="<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>" style="width:100%;height:120px;object-fit:cover;border-radius:6px;margin-bottom:8px;">
+                <?php endif; ?>
+                <h3 style="margin:0;"><?= htmlspecialchars($p['name']) ?></h3>
+                <div style="color:inherit;opacity:0.9;"><?= htmlspecialchars($p['description']) ?></div>
+                <div style="font-weight:700;margin-top:8px;">₴<?= number_format($p['price'],2) ?></div>
+                <a href="index.php?route=folder/buy_product&id=<?= (int)$p['id'] ?>" class="btn" style="margin-top:8px;display:inline-block;">Купити</a>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
 
-    <div class="form__actions">
-        <button type="submit" class="btn">Створити каталог</button>
-        <a href="index.php?route=folder/delete" class="btn btn--secondary">Видалити каталог</a>
-    </div>
-</form>
-
-<?php if (!empty($folders)): ?>
-    <h2>Існуючі каталоги</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Користувач</th>
-                <th>Підпапки</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($folders as $folder): ?>
-                <tr>
-                    <td><strong><?= htmlspecialchars($folder['name']) ?></strong></td>
-                    <td>
-                        <?php foreach ($folder['subfolders'] as $sub): ?>
-                            <code><?= htmlspecialchars($sub['name']) ?></code> (<?= $sub['files'] ?> файлів)
-                            <?php if ($sub !== end($folder['subfolders'])): ?>, <?php endif; ?>
-                        <?php endforeach; ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-<?php endif; ?>
+<script>
+    // make whole card clickable
+    document.querySelectorAll('.product-card').forEach(function(card){
+        card.addEventListener('click', function(e){
+            if (e.target.tagName.toLowerCase() === 'a' || e.target.tagName.toLowerCase() === 'button' || e.target.tagName.toLowerCase() === 'input') return;
+            const id = card.getAttribute('data-id');
+            if (id) window.location.href = 'index.php?route=folder/buy_product&id=' + id;
+        });
+    });
+</script>

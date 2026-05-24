@@ -18,7 +18,7 @@ $currentRoute = $_GET['route'] ?? 'index/main';
 $navItems = [
     'index/main' => 'Головна',
     'guestbook/index' => 'Гостьова книга',
-    'folder/create' => 'Каталоги',
+    'folder/create' => 'Товари',
     'movie/list' => 'Фільми',
     'movie/my_tickets' => 'Мої квитки',
         'admin/index' => 'Адмін',
@@ -86,6 +86,12 @@ $navItems = [
             const stored = localStorage.getItem('siteTheme');
             if (stored === 'light') { document.body.classList.add('bg-light-theme'); document.body.classList.remove('bg-dark-theme'); }
             else if (stored === 'dark') { document.body.classList.add('bg-dark-theme'); document.body.classList.remove('bg-light-theme'); }
+            else {
+                // default to dark theme for better contrast
+                if (!document.body.classList.contains('bg-dark-theme') && !document.body.classList.contains('bg-light-theme')) {
+                    document.body.classList.add('bg-dark-theme');
+                }
+            }
             updateIcon();
             btn.addEventListener('click', function(){
                 if (document.body.classList.contains('bg-light-theme')) {

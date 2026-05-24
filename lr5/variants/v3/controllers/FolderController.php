@@ -56,11 +56,117 @@ class FolderController extends PageController
 
         $folders = $this->getUserFolders();
 
+        // load products (simple storage in data/products/products.json)
+        $products = [];
+        $productsDir = DATA_DIR . '/products';
+        $productsFile = $productsDir . '/products.json';
+        if (!is_dir($productsDir)) mkdir($productsDir, 0755, true);
+        if (file_exists($productsFile)) {
+            $json = file_get_contents($productsFile);
+            $products = json_decode($json, true) ?: [];
+        }
+
+        // If no products, create some sample products
+        if (empty($products)) {
+            $products = [
+                ['id'=>1,'name'=>'Плюшева іграшка','price'=>199.00,'description'=>"М'яка іграшка для дітей",'image'=>''],
+                ['id'=>2,'name'=>'Попкорн великий','price'=>79.00,'description'=>'Смачний солоний попкорн','image'=>''],
+                ['id'=>3,'name'=>'Футболка кіно','price'=>499.00,'description'=>'Футболка з логотипом кінотеатру','image'=>''],
+            ];
+            file_put_contents($productsFile, json_encode($products, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        }
+
         $this->render('folder/create', [
             'message' => $message,
             'error' => $error,
             'folders' => $folders,
+            'products' => $products,
         ], 'Створення каталогу');
+    }
+
+    // Upload a product (admin only)
+    public function action_upload_product(): void
+    {
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_id'] !== 1) {
+            $this->redirect('auth/login');
+            return;
+        }
+
+        $name = trim($this->request->post('name', ''));
+        $price = (float)$this->request->post('price', 0);
+        $desc = trim($this->request->post('description', ''));
+
+        $productsDir = DATA_DIR . '/products';
+        if (!is_dir($productsDir)) mkdir($productsDir, 0755, true);
+        $productsFile = $productsDir . '/products.json';
+
+        $imagePath = '';
+        if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
+            $ext = strtolower(pathinfo($_FILES['product_image']['name'], PATHINFO_EXTENSION));
+            $safe = time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+            $dest = $productsDir . '/' . $safe;
+            if (move_uploaded_file($_FILES['product_image']['tmp_name'], $dest)) {
+                $imagePath = 'data/products/' . $safe;
+            }
+        }
+
+        $products = [];
+        if (file_exists($productsFile)) {
+            $products = json_decode(file_get_contents($productsFile), true) ?: [];
+        }
+
+        $id = count($products) ? (int)end($products)['id'] + 1 : 1;
+        $products[] = ['id' => $id, 'name' => $name, 'price' => $price, 'description' => $desc, 'image' => $imagePath];
+        file_put_contents($productsFile, json_encode($products, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+        $_SESSION['flash_success'] = 'Товар додано';
+        $this->redirect('folder/create');
+    }
+
+    // Show buy page for product
+    public function action_buy_product(): void
+    {
+        $id = (int)$this->request->get('id', 0);
+        $productsDir = DATA_DIR . '/products';
+        $productsFile = $productsDir . '/products.json';
+        $product = null;
+        if (file_exists($productsFile)) {
+            $products = json_decode(file_get_contents($productsFile), true) ?: [];
+            foreach ($products as $p) if ((int)$p['id'] === $id) { $product = $p; break; }
+        }
+        if (!$product) {
+            $this->redirect('folder/create');
+            return;
+        }
+
+        $this->render('folder/buy_product', ['product' => $product], 'Купівля товару');
+    }
+
+    // Process product purchase (simple receipt)
+    public function action_purchase_product(): void
+    {
+        $productId = (int)$this->request->post('product_id', 0);
+        $name = trim($this->request->post('name', 'Гість'));
+        $productsDir = DATA_DIR . '/products';
+        $productsFile = $productsDir . '/products.json';
+        $product = null;
+        if (file_exists($productsFile)) {
+            $products = json_decode(file_get_contents($productsFile), true) ?: [];
+            foreach ($products as $p) if ((int)$p['id'] === $productId) { $product = $p; break; }
+        }
+        if (!$product) {
+            $this->redirect('folder/create');
+            return;
+        }
+        // record purchase
+        $purchasesFile = $productsDir . '/purchases.json';
+        $purchases = [];
+        if (file_exists($purchasesFile)) $purchases = json_decode(file_get_contents($purchasesFile), true) ?: [];
+        $receipt = ['id' => time(), 'product' => $product, 'buyer' => $name, 'price' => $product['price'], 'created_at' => date('Y-m-d H:i:s')];
+        $purchases[] = $receipt;
+        file_put_contents($purchasesFile, json_encode($purchases, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+        $this->render('folder/receipt', ['receipt' => $receipt], 'Чек товару');
     }
 
     public function action_delete(): void
