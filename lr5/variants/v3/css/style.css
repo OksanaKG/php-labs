@@ -1071,14 +1071,64 @@ code {
 }
 .header__theme-toggle:hover { transform: translateY(-1px); }
 
-/* When a modal is open, hide auth links and greeting to avoid clutter */
-body.modal-open .header__auth,
-body.modal-open .header__greeting {
+/* Keep header above modal overlay so header buttons remain visible/clickable */
+.header { z-index: 10001; }
+
+/* When a modal is open, keep header visible; only optionally dim greeting if needed */
+body.modal-open .header__greeting { opacity: 0.9; }
+
+/* Hide theme toggle and auth links while a modal/detail partial is open to avoid duplication */
+body.modal-open .header__theme-toggle,
+body.modal-open .header__auth {
     display: none !important;
 }
 
-/* Hide theme toggle in header when modal is open */
-body.modal-open .header__theme-toggle { display: none !important; }
+/* Modal overlay and content improvements for a floating, elevated look */
+.modal {
+    display: none; /* JS toggles display */
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    align-items: center;
+    justify-content: center;
+    z-index: 11001;
+    padding: 40px 20px;
+    overflow-y: auto;
+}
+.modal .modal-content {
+    background: var(--card-bg, rgba(26,26,46,0.95));
+    color: inherit;
+    border-radius: 12px;
+    max-width: 1000px;
+    width: 100%;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.04);
+    padding: 20px;
+    transform: translateY(0);
+    max-height: calc(100vh - 160px);
+    overflow: auto;
+}
+
+/* Ensure modal form controls are readable regardless of global theme */
+.modal .form-control,
+.modal textarea.form-control,
+.modal .form__input,
+.modal .form__textarea,
+.modal .form__select,
+.modal select {
+    background: rgba(10,10,20,0.7) !important;
+    color: #f3f4f6 !important;
+    border-color: rgba(255,255,255,0.08) !important;
+}
+.modal .form-control::placeholder,
+.modal .form__textarea::placeholder {
+    color: #bfbfbf !important;
+}
+.modal .modal-content .movie-detail { margin: 6px 0; }
+
+/* Ensure modal inner image/text have breathing room */
+.modal .modal-content img { max-width: 100%; height: auto; border-radius: 6px; }
+.modal .modal-content .movie-poster { margin-bottom: 12px; }
 
 .header__auth-link {
     color: #cbd5e1;
@@ -1470,6 +1520,30 @@ body.bg-light-theme .polls-section {
 /* Center rows visually similar to mockup */
 .seats-row { justify-content: center; }
 
+/* Modal-specific tweaks to improve positioning and form readability */
+.modal {
+    align-items: flex-start !important;
+    padding-top: 64px !important;
+}
+.modal .modal-content {
+    margin-top: 8px;
+    max-height: calc(100vh - 128px);
+    overflow: auto;
+}
+.modal .form {
+    background: rgba(10, 10, 20, 0.6);
+    border-color: rgba(255,255,255,0.06);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+.modal .form__textarea {
+    background: rgba(255,255,255,0.04);
+    color: #f3f4f6;
+    border-color: rgba(255,255,255,0.06);
+}
+.modal .form__textarea::placeholder {
+    color: #bfbfbf;
+}
+
 /* Screening date selector styles to match mockup */
 #screening_date {
     width: 100%;
@@ -1525,6 +1599,36 @@ body.bg-light-theme .form__textarea {
     background: #fff;
     color: #1a1a2e;
     border-color: #ddd;
+}
+
+/* Dark theme: ensure movie description, meta and comments are on dark background with readable text */
+body.bg-dark-theme .movie-meta,
+body.bg-dark-theme .movie-description,
+body.bg-dark-theme .comments-section,
+body.bg-dark-theme .comment-item,
+body.bg-dark-theme .polls-section,
+body.bg-dark-theme .reactions-section {
+    background: rgba(10,10,20,0.45) !important;
+    color: #f3f4f6 !important;
+    border-color: rgba(255,255,255,0.04) !important;
+}
+body.bg-dark-theme .movie-meta p,
+body.bg-dark-theme .movie-description p,
+body.bg-dark-theme .comment-text,
+body.bg-dark-theme .comment-header,
+body.bg-dark-theme .comment-date,
+body.bg-dark-theme .comment-rating {
+    color: #e6e6e6 !important;
+}
+body.bg-dark-theme .comment-item {
+    border: 1px solid rgba(255,255,255,0.03);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+body.bg-dark-theme .movie-description {
+    padding: 14px;
+    border-radius: 8px;
 }
 
 
@@ -1687,4 +1791,18 @@ body.bg-light-theme .form__textarea {
     .success-page__actions {
         flex-direction: column;
     }
+}
+
+/* Comment textarea defaults to a readable dark style when site theme is dark */
+.comments-section .form-control,
+.comment-form .form-control,
+.comments-section textarea,
+.comment-form textarea {
+    background: rgba(10,10,20,0.6) !important;
+    color: #f3f4f6 !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+}
+.comments-section textarea::placeholder,
+.comment-form textarea::placeholder {
+    color: #bfbfbf !important;
 }

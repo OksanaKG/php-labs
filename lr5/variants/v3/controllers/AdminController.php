@@ -22,6 +22,24 @@ class AdminController extends PageController
         $stmt->execute();
         $totals = $stmt->fetch();
 
+        // Products revenue (simple JSON storage)
+        $productsDir = DATA_DIR . '/products';
+        $purchasesFile = $productsDir . '/purchases.json';
+        $productRevenue = 0.0;
+        $productSold = 0;
+        if (file_exists($purchasesFile)) {
+            $purchases = json_decode(file_get_contents($purchasesFile), true) ?: [];
+            foreach ($purchases as $rec) {
+                $productSold++;
+                $productRevenue += (float)($rec['price'] ?? 0.0);
+            }
+        }
+
+        if (!$totals) $totals = ['total_revenue' => 0.0, 'tickets_sold' => 0];
+        $totals['product_revenue'] = $productRevenue;
+        $totals['product_sold'] = $productSold;
+        $totals['combined_revenue'] = (float)($totals['total_revenue'] ?? 0) + $productRevenue;
+
         // Popular films (tickets per movie)
         $stmt = $this->db->prepare(
             "SELECT m.id, m.title, COUNT(t.id) as sold

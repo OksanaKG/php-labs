@@ -76,6 +76,8 @@ class FolderController extends PageController
             file_put_contents($productsFile, json_encode($products, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         }
 
+        // (products listing unchanged)
+
         $this->render('folder/create', [
             'message' => $message,
             'error' => $error,

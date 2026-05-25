@@ -42,15 +42,15 @@ $navItems = [
                     <?php if ($greetingText !== ''): ?>
                         <span class="header__greeting"><?= $greetingText ?></span>
                     <?php endif; ?>
-                    <button id="themeToggleHeader" class="header__theme-toggle" title="Toggle theme">🌙</button>
-                    <div class="header__auth">
-                        <?php if ($isLoggedIn): ?>
-                            <a href="index.php?route=auth/logout" class="header__auth-link header__auth-link--logout">Вийти</a>
-                        <?php else: ?>
-                            <a href="index.php?route=auth/login" class="header__auth-link">Увійти</a>
-                            <a href="index.php?route=auth/register" class="header__auth-link">Реєстрація</a>
-                        <?php endif; ?>
-                    </div>
+                        <button id="themeToggleHeader" class="header__theme-toggle" title="Toggle theme">🌙</button>
+                        <div class="header__auth">
+                            <?php if ($isLoggedIn): ?>
+                                <a href="index.php?route=auth/logout" class="header__auth-link header__auth-link--logout">Вийти</a>
+                            <?php else: ?>
+                                <a href="index.php?route=auth/login" class="header__auth-link">Увійти</a>
+                                <a href="index.php?route=auth/register" class="header__auth-link">Реєстрація</a>
+                            <?php endif; ?>
+                        </div>
                 </div>
             </div>
                     <nav class="nav">
@@ -81,7 +81,7 @@ $navItems = [
     <script>
         (function(){
             const btn = document.getElementById('themeToggleHeader');
-            function updateIcon(){ btn.textContent = document.body.classList.contains('bg-light-theme') ? '🌙' : '☀️'; }
+            function updateIcon(){ if (btn) btn.textContent = document.body.classList.contains('bg-light-theme') ? '🌙' : '☀️'; }
             // initialize from localStorage or body class
             const stored = localStorage.getItem('siteTheme');
             if (stored === 'light') { document.body.classList.add('bg-light-theme'); document.body.classList.remove('bg-dark-theme'); }
@@ -93,17 +93,19 @@ $navItems = [
                 }
             }
             updateIcon();
-            btn.addEventListener('click', function(){
-                if (document.body.classList.contains('bg-light-theme')) {
-                    document.body.classList.remove('bg-light-theme');
-                    document.body.classList.add('bg-dark-theme');
-                    localStorage.setItem('siteTheme','dark');
-                } else {
-                    document.body.classList.remove('bg-dark-theme');
-                    document.body.classList.add('bg-light-theme');
-                    localStorage.setItem('siteTheme','light');
-                }
-                updateIcon();
-            });
+            if (btn) {
+                btn.addEventListener('click', function(){
+                    if (document.body.classList.contains('bg-light-theme')) {
+                        document.body.classList.remove('bg-light-theme');
+                        document.body.classList.add('bg-dark-theme');
+                        localStorage.setItem('siteTheme','dark');
+                    } else {
+                        document.body.classList.remove('bg-dark-theme');
+                        document.body.classList.add('bg-light-theme');
+                        localStorage.setItem('siteTheme','light');
+                    }
+                    updateIcon();
+                });
+            }
         })();
     </script>

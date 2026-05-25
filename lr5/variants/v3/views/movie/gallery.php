@@ -166,8 +166,8 @@ $movies = $movies ?? [];
 </style>
 
 <!-- Modal placeholder -->
-<div id="movieModal" class="modal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:9999;">
-    <div class="modal-content card" style="padding:20px;max-width:900px;width:95%;max-height:90%;overflow:auto;position:relative;">
+<div id="movieModal" class="modal" style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.6);align-items:flex-start;padding-top:64px;justify-content:center;z-index:11001;">
+    <div class="modal-content card" style="padding:20px;max-width:900px;width:95%;max-height:calc(100vh - 128px);overflow:auto;position:relative;margin-top:8px;">
         <div style="position:absolute;right:12px;top:12px;display:flex;gap:8px;align-items:center;">
             <button id="modalClose" style="border:none;background:transparent;color:inherit;padding:6px 10px;border-radius:4px;cursor:pointer">✕</button>
         </div>
@@ -191,6 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         // mark modal open so header auth can be hidden
         document.body.classList.add('modal-open');
+        // prevent background scroll while modal is open
+        try { document.body.style.overflow = 'hidden'; } catch(e){}
         modal.style.display = 'flex';
     }
 
@@ -198,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = 'none';
         modalBody.innerHTML = '';
         document.body.classList.remove('modal-open');
+        try { document.body.style.overflow = ''; } catch(e){}
     }
 
     document.querySelectorAll('.btn-open-modal').forEach(function(btn){

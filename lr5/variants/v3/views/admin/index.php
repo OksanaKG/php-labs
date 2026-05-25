@@ -13,6 +13,18 @@ $popular = $popular ?? [];
             <h3>Продано квитків</h3>
             <p style="font-size:24px;font-weight:700;"><?= (int)($totals['tickets_sold'] ?? 0) ?></p>
         </div>
+        <div class="card" style="padding:15px;border-radius:8px;">
+            <h3>Дохід від товарів</h3>
+            <p style="font-size:20px;font-weight:700;">₴<?= number_format($totals['product_revenue'] ?? 0, 2) ?></p>
+        </div>
+        <div class="card" style="padding:15px;border-radius:8px;">
+            <h3>Продано товарів</h3>
+            <p style="font-size:20px;font-weight:700;"><?= (int)($totals['product_sold'] ?? 0) ?></p>
+        </div>
+        <div class="card" style="padding:15px;border-radius:8px;">
+            <h3>Разом (вкл. товари)</h3>
+            <p style="font-size:20px;font-weight:700;">₴<?= number_format($totals['combined_revenue'] ?? ($totals['total_revenue'] ?? 0), 2) ?></p>
+        </div>
     </div>
 
     <h2>Популярні фільми (продано квитків)</h2>

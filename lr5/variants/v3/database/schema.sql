@@ -212,3 +212,53 @@ INSERT INTO screenings (movie_id, hall_id, screening_datetime, price_per_ticket)
     ((SELECT id FROM movies WHERE title = 'Початок' LIMIT 1), 1, datetime('now', '+2 day', '18:30'), 180.00),
     ((SELECT id FROM movies WHERE title = 'Хрещений батько' LIMIT 1), 1, datetime('now', '+2 day', '20:30'), 140.00),
     ((SELECT id FROM movies WHERE title = 'Матриця' LIMIT 1), 1, datetime('now', '+3 day', '19:00'), 170.00);
+
+-- Additional seed movies requested by user (Ukrainian titles)
+INSERT INTO movies (title, director, genre, year, duration_min, description) VALUES
+    ('Диявол носить Prada', 'David Frankel', 'Comedy', 2006, 109, 'Комедія про моду та кар''єру'),
+    ('Як приборкати дракона', 'Dean DeBlois', 'Animation', 2010, 98, 'Пригоди юного вікінга та його дракона'),
+    ('Гаррі Поттер і філософський камінь', 'Chris Columbus', 'Fantasy', 2001, 152, 'Початок пригод Гаррі Поттера'),
+    ('Чорна Вдова', 'Cate Shortland', 'Action', 2021, 134, 'Супергеройський екшен про Наташу Романову'),
+    ('Залізна Людина', 'Jon Favreau', 'Action', 2008, 126, 'Початок кінематографічного всесвіту Marvel'),
+    ('Тор', 'Kenneth Branagh', 'Action', 2011, 115, 'Нордична епопея про бога громів'),
+    ('Капітан Америка: Перший месник', 'Joe Johnston', 'Action', 2011, 124, 'Походження Капітана Америки'),
+    ('Месники', 'Joss Whedon', 'Action', 2012, 143, 'Команда супергероїв об''єднується'),
+    ('Людина-павук: Повернення додому', 'Jon Watts', 'Action', 2017, 133, 'Повернення Пітера Паркера до шкільного життя');
+
+-- Add three screenings for each newly seeded movie (early/mid/evening across next days)
+INSERT INTO screenings (movie_id, hall_id, screening_datetime, price_per_ticket) VALUES
+    ((SELECT id FROM movies WHERE title = 'Диявол носить Prada' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+13 hours'), 140.00),
+    ((SELECT id FROM movies WHERE title = 'Диявол носить Prada' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+16 hours', '+30 minutes'), 150.00),
+    ((SELECT id FROM movies WHERE title = 'Диявол носить Prada' LIMIT 1), 1, datetime('now', '+2 day', 'start of day', '+19 hours'), 160.00),
+
+    ((SELECT id FROM movies WHERE title = 'Як приборкати дракона' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+13 hours'), 120.00),
+    ((SELECT id FROM movies WHERE title = 'Як приборкати дракона' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+16 hours', '+30 minutes'), 130.00),
+    ((SELECT id FROM movies WHERE title = 'Як приборкати дракона' LIMIT 1), 1, datetime('now', '+2 day', 'start of day', '+19 hours'), 140.00),
+
+    ((SELECT id FROM movies WHERE title = 'Гаррі Поттер і філософський камінь' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+13 hours'), 150.00),
+    ((SELECT id FROM movies WHERE title = 'Гаррі Поттер і філософський камінь' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+16 hours', '+30 minutes'), 160.00),
+    ((SELECT id FROM movies WHERE title = 'Гаррі Поттер і філософський камінь' LIMIT 1), 1, datetime('now', '+2 day', 'start of day', '+19 hours'), 170.00),
+
+    ((SELECT id FROM movies WHERE title = 'Чорна Вдова' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+13 hours'), 160.00),
+    ((SELECT id FROM movies WHERE title = 'Чорна Вдова' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+16 hours', '+30 minutes'), 170.00),
+    ((SELECT id FROM movies WHERE title = 'Чорна Вдова' LIMIT 1), 1, datetime('now', '+2 day', 'start of day', '+19 hours'), 180.00),
+
+    ((SELECT id FROM movies WHERE title = 'Залізна Людина' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+13 hours'), 150.00),
+    ((SELECT id FROM movies WHERE title = 'Залізна Людина' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+16 hours', '+30 minutes'), 160.00),
+    ((SELECT id FROM movies WHERE title = 'Залізна Людина' LIMIT 1), 1, datetime('now', '+2 day', 'start of day', '+19 hours'), 170.00),
+
+    ((SELECT id FROM movies WHERE title = 'Тор' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+13 hours'), 140.00),
+    ((SELECT id FROM movies WHERE title = 'Тор' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+16 hours', '+30 minutes'), 150.00),
+    ((SELECT id FROM movies WHERE title = 'Тор' LIMIT 1), 1, datetime('now', '+2 day', 'start of day', '+19 hours'), 160.00),
+
+    ((SELECT id FROM movies WHERE title = 'Капітан Америка: Перший месник' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+13 hours'), 150.00),
+    ((SELECT id FROM movies WHERE title = 'Капітан Америка: Перший месник' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+16 hours', '+30 minutes'), 160.00),
+    ((SELECT id FROM movies WHERE title = 'Капітан Америка: Перший месник' LIMIT 1), 1, datetime('now', '+2 day', 'start of day', '+19 hours'), 170.00),
+
+    ((SELECT id FROM movies WHERE title = 'Месники' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+13 hours'), 170.00),
+    ((SELECT id FROM movies WHERE title = 'Месники' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+16 hours', '+30 minutes'), 180.00),
+    ((SELECT id FROM movies WHERE title = 'Месники' LIMIT 1), 1, datetime('now', '+2 day', 'start of day', '+19 hours'), 190.00),
+
+    ((SELECT id FROM movies WHERE title = 'Людина-павук: Повернення додому' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+13 hours'), 140.00),
+    ((SELECT id FROM movies WHERE title = 'Людина-павук: Повернення додому' LIMIT 1), 1, datetime('now', '+1 day', 'start of day', '+16 hours', '+30 minutes'), 150.00),
+    ((SELECT id FROM movies WHERE title = 'Людина-павук: Повернення додому' LIMIT 1), 1, datetime('now', '+2 day', 'start of day', '+19 hours'), 160.00);

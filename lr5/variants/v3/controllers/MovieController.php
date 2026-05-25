@@ -248,17 +248,17 @@ class MovieController extends PageController
     {
         // Insert sample movies if they don't already exist (idempotent)
         $samples = [
-            ['title'=>'Диявол носить Prada','director'=>'David Frankel','genre'=>'Drama','year'=>2006,'duration'=>109],
-            ['title'=>'Як приборкати дракона','director'=>'Dean DeBlois','genre'=>'Animation','year'=>2010,'duration'=>98],
-            ['title'=>'Гаррі Поттер і філософський камінь','director'=>'Chris Columbus','genre'=>'Fantasy','year'=>2001,'duration'=>152],
-            ['title'=>'Чорна Вдова','director'=>'Cate Shortland','genre'=>'Action','year'=>2021,'duration'=>134],
-            ['title'=>'Людина-павук: Повернення додому','director'=>'Jon Watts','genre'=>'Action','year'=>2017,'duration'=>133],
+            ['title'=>'Диявол носить Prada','director'=>'David Frankel','genre'=>'Drama','year'=>2006,'duration'=>109,'description'=>'Комедія-драма про молодого журналіста та кастинг у світі моди.'],
+            ['title'=>'Як приборкати дракона','director'=>'Dean DeBlois','genre'=>'Animation','year'=>2010,'duration'=>98,'description'=>'Пригодницький анімаційний фільм про дружбу хлопчика і дракона.'],
+            ['title'=>'Гаррі Поттер і філософський камінь','director'=>'Chris Columbus','genre'=>'Fantasy','year'=>2001,'duration'=>152,'description'=>'Початок пригод Гаррі Поттера у школі чарівництва Хогвартс.'],
+            ['title'=>'Чорна Вдова','director'=>'Cate Shortland','genre'=>'Action','year'=>2021,'duration'=>134,'description'=>'Супергеройський екшен про Наташу Романову та її минуле.'],
+            ['title'=>'Людина-павук: Повернення додому','director'=>'Jon Watts','genre'=>'Action','year'=>2017,'duration'=>133,'description'=>'Повернення Пітера Паркера до звичайного шкільного життя, поки він бореться зі злочинністю.' ],
             // Marvel examples
-            ['title'=>'Залізна Людина','director'=>'Jon Favreau','genre'=>'Action','year'=>2008,'duration'=>126],
-            ['title'=>'Тор','director'=>'Kenneth Branagh','genre'=>'Action','year'=>2011,'duration'=>115],
-            ['title'=>'Капітан Америка: Перший месник','director'=>'Joe Johnston','genre'=>'Action','year'=>2011,'duration'=>124],
-            ['title'=>'Месники','director'=>'Joss Whedon','genre'=>'Action','year'=>2012,'duration'=>143],
-            ['title'=>'Людина-павук: Далеко від дому','director'=>'Jon Watts','genre'=>'Action','year'=>2019,'duration'=>129],
+            ['title'=>'Залізна Людина','director'=>'Jon Favreau','genre'=>'Action','year'=>2008,'duration'=>126,'description'=>'Науково-фантастичний бойовик про винахідника та мільярдера, який стає супергероєм.' ],
+            ['title'=>'Тор','director'=>'Kenneth Branagh','genre'=>'Action','year'=>2011,'duration'=>115,'description'=>'Епічний фільм, що поєднує нордичну міфологію й супергеройські мотиви.' ],
+            ['title'=>'Капітан Америка: Перший месник','director'=>'Joe Johnston','genre'=>'Action','year'=>2011,'duration'=>124,'description'=>'Походження героя-криштального лідера, який бореться за справедливість.' ],
+            ['title'=>'Месники','director'=>'Joss Whedon','genre'=>'Action','year'=>2012,'duration'=>143,'description'=>'Команда супергероїв об’єднується, щоб врятувати світ.' ],
+            ['title'=>'Людина-павук: Далеко від дому','director'=>'Jon Watts','genre'=>'Action','year'=>2019,'duration'=>129,'description'=>'Подальші пригоди Пітера Паркера під час подорожі Європою.' ],
         ];
 
         $ins = $this->db->prepare('INSERT INTO movies (title,director,genre,year,duration_min,poster_image,description,age_limit) VALUES (:title,:director,:genre,:year,:duration,:poster,:desc,:age)');
@@ -282,11 +282,16 @@ class MovieController extends PageController
                         }
                     }
                 }
+                // if description is empty, update it from sample data
+                if (!empty($s['description'])) {
+                    $u = $this->db->prepare('UPDATE movies SET description = :desc WHERE id = :id AND (description IS NULL OR description = "")');
+                    $u->execute([':desc' => $s['description'], ':id' => (int)$existing]);
+                }
                 continue;
             }
 
             $ins->execute([
-                ':title'=>$s['title'], ':director'=>$s['director'], ':genre'=>$s['genre'], ':year'=>$s['year'], ':duration'=>$s['duration'], ':poster'=>'', ':desc'=>'', ':age'=>0
+                ':title'=>$s['title'], ':director'=>$s['director'], ':genre'=>$s['genre'], ':year'=>$s['year'], ':duration'=>$s['duration'], ':poster'=>'', ':desc'=>$s['description'] ?? '', ':age'=>0
             ]);
             $mid = (int)$this->db->lastInsertId();
             // add screenings for next 3 days at multiple times

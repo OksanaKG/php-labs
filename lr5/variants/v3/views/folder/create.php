@@ -11,6 +11,7 @@
     </form>
 <?php endif; ?>
 
+
 <div class="products" style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;">
     <?php if (empty($products)): ?>
         <div class="card" style="padding:18px;border-radius:8px;min-width:220px;">
