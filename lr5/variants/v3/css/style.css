@@ -1059,6 +1059,7 @@ code {
     gap: 12px;
     align-items: center;
 }
+.header__auth-link--profile { background: rgba(255,255,255,0.03); margin-right:4px; }
 
 /* Theme toggle in header: keep transparent background and no border */
 .header__theme-toggle {
@@ -1203,10 +1204,32 @@ body.modal-open .header__auth {
     background: linear-gradient(180deg, #1a1a2e 0%, #000 100%);
     border-top: 3px solid #ffd700;
     color: #c0c0c0;
-    text-align: center;
     padding: 20px 0;
     font-size: 0.9rem;
     margin-top: auto;
+}
+
+.footer .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+.footer .footer-left p { margin: 0; }
+.footer .contact-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+.footer .contact-list li { color: #cfcfcf; font-size: 0.95rem; }
+.footer .contact-list a { color: #ffd700; text-decoration: none; }
+
+@media (max-width: 768px) {
+    .footer .footer-inner { flex-direction: column; text-align: center; gap: 8px; }
+    .footer .contact-list { flex-direction: column; gap: 6px; }
 }
 
 /* Headings */

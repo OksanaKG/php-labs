@@ -180,6 +180,13 @@ class AuthController extends PageController
             return;
         }
 
+        // Заборонити видалення адміністратора (id = 1)
+        if ((int)($_SESSION['user_id'] ?? 0) === 1) {
+            $_SESSION['flash_success'] = 'Адміністратора не можна видалити.';
+            $this->redirect('auth/profile');
+            return;
+        }
+
         if ($this->request->isPost()) {
             $stmt = $this->db->prepare('DELETE FROM users WHERE id = :id');
             $stmt->execute([':id' => $_SESSION['user_id']]);

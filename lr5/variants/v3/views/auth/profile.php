@@ -21,7 +21,9 @@ $user = $user ?? [];
 
     <div class="form__actions">
         <a href="index.php?route=auth/edit" class="btn">Редагувати</a>
-        <a href="index.php?route=auth/delete" class="btn btn--danger">Видалити акаунт</a>
+        <?php if ((int)($user['id'] ?? 0) !== 1): ?>
+            <a href="index.php?route=auth/delete" class="btn btn--danger">Видалити акаунт</a>
+        <?php endif; ?>
         <a href="index.php?route=auth/logout" class="btn btn--secondary">Вийти</a>
     </div>
 </div>

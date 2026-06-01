@@ -45,6 +45,7 @@ $navItems = [
                         <button id="themeToggleHeader" class="header__theme-toggle" title="Toggle theme">🌙</button>
                         <div class="header__auth">
                             <?php if ($isLoggedIn): ?>
+                                <a href="index.php?route=auth/profile" class="header__auth-link header__auth-link--profile">Профіль</a>
                                 <a href="index.php?route=auth/logout" class="header__auth-link header__auth-link--logout">Вийти</a>
                             <?php else: ?>
                                 <a href="index.php?route=auth/login" class="header__auth-link">Увійти</a>
